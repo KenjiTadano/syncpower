@@ -76,6 +76,7 @@ export default function Home() {
       setValue(newValue);
     }
   };
+  /* スクロールに連動してアクティブなタブを切り替え */
 
   useEffect(() => {
     authenticate();
@@ -196,10 +197,49 @@ export default function Home() {
                 height: "50px",
               }}
             >
-              <Tabs value={value} onChange={handleChange} aria-label="nav tabs example" role="navigation">
-                <LinkTab label="今日は何の日？" href="todayWhatDaySection" />
-                <LinkTab label="最新音楽ニュース" href="musicNewsSection" />
-                <LinkTab label="インタビュー" href="interviewSection" />
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="nav tabs example"
+                role="navigation"
+                variant="fullWidth"
+                sx={{
+                  backgroundColor: "#fff",
+                  "& .MuiTab-root": {
+                    color: "#999", // 非アクティブ時
+                  },
+                  "& .Mui-selected": {
+                    color: "#d32f2f!important", // アクティブ時の文字色
+                  },
+                  "& .MuiTabs-indicator": {
+                    backgroundColor: "#d32f2f", // インジケーター色（下線）
+                  },
+                }}
+              >
+                <LinkTab
+                  label="今日は何の日？"
+                  href="todayWhatDaySection"
+                  sx={{
+                    fontSize: "11px",
+                    fontWeight: "900",
+                  }}
+                />
+                <LinkTab
+                  label="最新音楽ニュース"
+                  href="musicNewsSection"
+                  sx={{
+                    fontSize: "11px",
+                    fontWeight: "900",
+                  }}
+                />
+                <LinkTab
+                  label="インタビュー"
+                  href="interviewSection"
+                  sx={{
+                    fontSize: "11px",
+                    fontWeight: "900",
+                  }}
+                />
               </Tabs>
             </Box>
 
