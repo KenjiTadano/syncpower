@@ -93,7 +93,7 @@ const MusicNewsList = ({ offset, limit }) => {
               >
                 {/* サムネイル画像 */}
                 {news.image_url && news.image_url.length > 0 && (
-                  <Box sx={{ width: "50px", height: "50px", mr: 1, overflow: "hidden" }}>
+                  <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
                     <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
                   </Box>
                 )}

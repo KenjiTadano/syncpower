@@ -179,13 +179,7 @@ export default function Home() {
 
       {token && !loading && (
         <div>
-          <Container
-            maxWidth="sm"
-            sx={{
-              margin: "0 0",
-              padding: "0", // 水平方向に中央揃え
-            }}
-          >
+          <Container Container maxWidth={false} disableGutters>
             <Box
               sx={{
                 position: "fixed", // ビューポートに対して固定
@@ -207,6 +201,7 @@ export default function Home() {
                   backgroundColor: "#fff",
                   "& .MuiTab-root": {
                     color: "#999", // 非アクティブ時
+                    flex: 1,
                   },
                   "& .Mui-selected": {
                     color: "#d32f2f!important", // アクティブ時の文字色
@@ -222,6 +217,11 @@ export default function Home() {
                   sx={{
                     fontSize: "11px",
                     fontWeight: "900",
+                    width: "100%", // 横幅いっぱい
+                    display: "flex", // 子要素をflex配置
+                    justifyContent: "center", // 中央揃え
+                    alignItems: "center", // 垂直中央揃え（必要に応じて）
+                    textTransform: "none", // 大文字化を無効に（任意）
                   }}
                 />
                 <LinkTab
@@ -230,6 +230,11 @@ export default function Home() {
                   sx={{
                     fontSize: "11px",
                     fontWeight: "900",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textTransform: "none",
                   }}
                 />
                 <LinkTab
@@ -238,22 +243,26 @@ export default function Home() {
                   sx={{
                     fontSize: "11px",
                     fontWeight: "900",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textTransform: "none",
                   }}
                 />
               </Tabs>
             </Box>
 
             {/* 各コンポーネントを Element で囲む */}
-            <Element name="todayWhatDaySection" style={{ marginTop: "50px" }}>
+            <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }}>
               <TodayWhatDay accessToken={token} />
             </Element>
 
-            <Element name="musicNewsSection">
+            <Element name="musicNewsSection" style={{ width: "100%" }}>
               <ReadMusicNews accessToken={token} name="todayWhatDay" />
             </Element>
 
-            <Element name="interviewSection">
-              {/* TODO: インタビューコンポーネントを実装 */}
+            <Element name="interviewSection" style={{ width: "100%" }}>
               <Typography variant="h4">インタビュー (未実装)</Typography>
             </Element>
           </Container>

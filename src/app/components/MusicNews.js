@@ -132,6 +132,7 @@ export default function MusicNews({ accessToken }) {
                   href={`/music-news/${news.news_id}`}
                   sx={{
                     display: "flex",
+                    alignItems: "center",
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -141,7 +142,7 @@ export default function MusicNews({ accessToken }) {
                 >
                   {/* サムネイル画像 */}
                   {news.image_url && news.image_url.length > 0 && (
-                    <Box sx={{ width: "90px", height: "auto", m: 1, overflow: "hidden" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
                       <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
                     </Box>
                   )}
