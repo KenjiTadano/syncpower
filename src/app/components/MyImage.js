@@ -36,36 +36,17 @@ export default function MyImage({ imageUrl, accessToken }) {
     }
 
     loadImage();
+
+    // クリーンアップでObjectURLを破棄しない（キャッシュ保持のため）
   }, [imageUrl, accessToken]);
 
-  return (
-    <>
-      {isLoading ? (
-        <div
-          style={{
-            width: "100%",
-            paddingTop: "56.25%", // 16:9 aspect ratio
-            backgroundColor: "#eee",
-            position: "relative",
-          }}
-        />
-      ) : (
-        imageBlob && (
-          <div style={{ position: "relative", width: "100%", paddingTop: "56.25%" }}>
-            <Image
-              src={imageBlob}
-              alt="My Image"
-              fill
-              style={{
-                objectFit: "cover",
-                borderRadius: "2px",
-              }}
-              loader={({ src }) => src}
-              unoptimized
-            />
-          </div>
-        )
-      )}
-    </>
-  );
+  if (isLoading) {
+    return <div style={{ width: "100%", height: "100px", backgroundColor: "#eee" }}>Loading...</div>;
+  }
+
+  if (!imageBlob) {
+    return null;
+  }
+
+  return <Image src={imageBlob} alt="My Image" width={600} height={400} style={{ width: "100%", maxWidth: "100%", height: "auto" }} loader={({ src }) => src} unoptimized={true} loading="lazy" />;
 }
