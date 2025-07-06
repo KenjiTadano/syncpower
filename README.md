@@ -1,4 +1,7 @@
-##Git コマンド
+##SourceTreeで接続方法
+・アカウントはhttpsで作成
+・tokenをgithubから取得してアカウントに貼り付ける
+・
 
 ## 自己署名証明書の作成（HTTPS 用）
 
