@@ -4,3 +4,15 @@ body {
 p {
   margin: 0;
 }
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
+.skeleton {
+  animation: skeleton-loading 1.5s linear infinite alternate;
+}

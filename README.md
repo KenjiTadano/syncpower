@@ -74,3 +74,6 @@ npm install
 node server.js
 
 ...
+
+
+###ディレクトリ構造

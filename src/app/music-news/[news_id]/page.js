@@ -1,83 +1,97 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import MyImage from "../../components/MyImage";
+import { useState, useEffect } from "react"; // React の useState と useEffect フックをインポート
+import { useRouter } from "next/navigation"; // Next.js の useRouter フックをインポート
+import Link from "next/link"; // Next.js の Link コンポーネントをインポート
+import MyImage from "../../components/MyImage"; // MyImage コンポーネントをインポート
 /* MUI ICON */
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"; // MUI のアイコンをインポート
+import IconButton from "@mui/material/IconButton"; // MUI の IconButton コンポーネントをインポート
 /* Mui */
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import { Container } from "@mui/material";
-import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box"; // MUI の Box コンポーネントをインポート
+import Stack from "@mui/material/Stack"; // MUI の Stack コンポーネントをインポート
+import Typography from "@mui/material/Typography"; // MUI の Typography コンポーネントをインポート
+import Divider from "@mui/material/Divider"; // MUI の Divider コンポーネントをインポート
+import Card from "@mui/material/Card"; // MUI の Card コンポーネントをインポート
+import CardActions from "@mui/material/CardActions"; // MUI の CardActions コンポーネントをインポート
+import CardContent from "@mui/material/CardContent"; // MUI の CardContent コンポーネントをインポート
+import { Container } from "@mui/material"; // MUI の Container コンポーネントをインポート
+import Chip from "@mui/material/Chip"; // MUI の Chip コンポーネントをインポート
+import LinearProgress from '@mui/material/LinearProgress'; // MUI の LinearProgress コンポーネントをインポート (プログレスバー)
 
 export default function MusicNewsDetail({ params }) {
-  const { news_id } = params;
-  const [newsItem, setNewsItem] = useState(null);
-  const [error, setError] = useState(null);
-  const router = useRouter();
-  const [accessToken, setAccessToken] = useState(null); // Add state for the access token
+  // MusicNewsDetail コンポーネント (音楽ニュース詳細ページ)
+  const { news_id } = params; // URL パラメータから news_id を取得
+  const [newsItem, setNewsItem] = useState(null); // ニュース記事のデータを保持する state
+  const [error, setError] = useState(null); // エラーメッセージを保持する state
+  const router = useRouter(); // useRouter フックを使用して、ページ遷移を制御
+  const [accessToken, setAccessToken] = useState(null); // アクセストークンを保持する state
 
   /* アクセストークンを取得処理 */
   useEffect(() => {
-    // Fetch the access token first
+    // useEffect フックを使用して、コンポーネントのマウント時にアクセストークンを取得
     const fetchAccessToken = async () => {
+      // アクセストークンを取得する非同期関数
       try {
-        const response = await fetch("/api/auth"); // Assuming this route provides the token
+        const response = await fetch("/api/auth"); // /api/auth エンドポイントからアクセストークンを取得
         if (!response.ok) {
-          throw new Error("Failed to fetch access token");
+          // レスポンスがエラーの場合
+          throw new Error("Failed to fetch access token"); // エラーをスロー
         }
-        const data = await response.json();
-        setAccessToken(data.token);
+        const data = await response.json(); // レスポンスを JSON として解析
+        setAccessToken(data.token); // アクセストークンを state に設定
       } catch (error) {
-        setError(error.message);
+        // エラーが発生した場合
+        setError(error.message); // エラーメッセージを state に設定
       }
     };
 
-    fetchAccessToken();
-  }, []);
+    fetchAccessToken(); // アクセストークンを取得する関数を呼び出す
+  }, []); // 依存配列が空のため、コンポーネントのマウント時にのみ実行
+
   /* Newsの詳細をFetchで取得 */
   useEffect(() => {
+    // useEffect フックを使用して、コンポーネントのマウント時および accessToken の変更時にニュース記事の詳細を取得
     const fetchNewsDetail = async () => {
-      if (!accessToken) return; // Don't fetch if token is not yet available
+      // ニュース記事の詳細を取得する非同期関数
+      if (!accessToken) return; // アクセストークンがない場合は、API リクエストを実行しない
 
       try {
         const response = await fetch(`/api/music-news/${news_id}`, {
+          // /api/music-news/${news_id} エンドポイントからニュース記事の詳細を取得
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Include the token in the header
+            Authorization: `Bearer ${accessToken}`, // Authorization ヘッダーにアクセストークンを設定
           },
         });
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "ニュース詳細の取得に失敗しました");
+          // レスポンスがエラーの場合
+          const errorData = await response.json(); // エラーレスポンスを JSON として解析
+          throw new Error(errorData.error || "ニュース詳細の取得に失敗しました"); // エラーをスロー
         }
-        const data = await response.json();
+        const data = await response.json(); // レスポンスを JSON として解析
 
         if (data.data && data.data.length > 0) {
-          setNewsItem(data.data[0]); // APIが配列を返すことを想定
+          // データが存在する場合
+          setNewsItem(data.data[0]); // ニュース記事のデータを state に設定 (API が配列を返すことを想定)
           // API から取得したデータ全体をログに出力
           console.log("API レスポンス (全体):", data);
           // または、より詳細なオブジェクト構造を確認するために console.dir を使用
           console.dir(data, { depth: null });
         } else {
-          setError("ニュースが見つかりませんでした");
+          // データが存在しない場合
+          setError("ニュースが見つかりませんでした"); // エラーメッセージを state に設定
         }
       } catch (err) {
-        setError(err.message);
+        // エラーが発生した場合
+        setError(err.message); // エラーメッセージを state に設定
       }
     };
 
-    fetchNewsDetail();
-  }, [news_id, accessToken]); // Re-run effect when news_id or accessToken changes
+    fetchNewsDetail(); // ニュース記事の詳細を取得する関数を呼び出す
+  }, [news_id, accessToken]); // 依存配列に news_id と accessToken を指定
 
   if (error) {
+    // エラーが発生した場合
     return (
       <div>
         <h1>エラー</h1>
@@ -88,18 +102,20 @@ export default function MusicNewsDetail({ params }) {
   }
 
   if (!newsItem) {
-    return <div>ロード中...</div>;
+    // ニュース記事のデータがまだ取得できていない場合 (ローディング中)
+    return <LinearProgress />; // LinearProgress コンポーネントを表示 (プログレスバー)
   }
 
   // artist_name と artist_id を取得
-  const artistName = newsItem.artist && newsItem.artist.length > 0 ? newsItem.artist[0].artist_name : "不明";
-  const artistId = newsItem.artist && newsItem.artist.length > 0 ? newsItem.artist[0].artist_id : "不明";
+  const artistName = newsItem.artist && newsItem.artist.length > 0 ? newsItem.artist[0].artist_name : "不明"; // アーティスト名を取得
+  const artistId = newsItem.artist && newsItem.artist.length > 0 ? newsItem.artist[0].artist_id : "不明"; // アーティスト ID を取得
 
   /* 画面表示部分 */
   return (
     <div>
       <Container
         sx={{
+          // Container コンポーネントのスタイル
           position: "fixed",
           top: 0,
           left: 0,
@@ -115,11 +131,14 @@ export default function MusicNewsDetail({ params }) {
         <Stack direction={"row"} spacing={3} sx={{ width: "100%" }}>
           {" "}
           {/* Stack に width: 100% を追加 */}
-          <IconButton color="#666666" aria-label="" onClick={() => router.back()}>
-            <ArrowBackIosNewIcon />
+          {/* Stack に width: 100% を追加 */}
+          <IconButton color="#666666" aria-label="Back" onClick={() => router.back()}>
+            {/* IconButton コンポーネント (前のページに戻るボタン) */}
+            <ArrowBackIosNewIcon /> {/* 戻るアイコン */}
           </IconButton>
           <Typography
             sx={{
+              // Typography コンポーネントのスタイル
               display: "block",
               fontSize: "16px",
               whiteSpace: "nowrap",
@@ -130,13 +149,14 @@ export default function MusicNewsDetail({ params }) {
               width: "100%", // Typography に width を追加
             }}
           >
-            {newsItem.news_title}
+            {newsItem.news_title} {/* ニュース記事のタイトルを表示 */}
           </Typography>
         </Stack>
       </Container>
 
       <Container
         sx={{
+          // Container コンポーネントのスタイル
           backgroundColor: "#EDEDED", // 背景色をlightblueに設定
           padding: "12px",
           marginTop: "60px",
@@ -144,36 +164,44 @@ export default function MusicNewsDetail({ params }) {
       >
         <Card
           sx={{
+            // Card コンポーネントのスタイル
             padding: "12px",
           }}
         >
           <Stack spacing={3}>
+            {/* Stack コンポーネント (要素を縦に並べる) */}
             <Stack spacing={1}>
+              {/* Stack コンポーネント (要素を縦に並べる) */}
               <Typography
                 sx={{
+                  // Typography コンポーネントのスタイル
                   fontSize: "20px",
                   fontWeight: "900",
                   lineHeight: "140%",
                 }}
               >
-                {newsItem.news_title}
+                {newsItem.news_title} {/* ニュース記事のタイトルを表示 */}
               </Typography>
               <Typography
                 sx={{
+                  // Typography コンポーネントのスタイル
                   fontSize: "10px",
                   marginY: "2px",
                   color: "#666666",
                 }}
               >
-                投稿日: {newsItem.posted_at}
+                投稿日: {newsItem.posted_at} {/* ニュース記事の投稿日を表示 */}
               </Typography>
-              <Chip label={`${newsItem.news_genre_name}`} sx={{ width: "fit-content" }} /> {/* Chipで表示 */}
+              <Chip label={`${newsItem.news_genre_name}`} sx={{ width: "fit-content" }} /> {/* Chip コンポーネント (ニュース記事のジャンルを表示) */}
             </Stack>
             {/* 画像とキャプション */}
             <Stack spacing={0}>
+              {/* Stack コンポーネント (要素を縦に並べる) */}
               {newsItem.image_url && newsItem.image_url.length > 0 && <MyImage imageUrl={newsItem.image_url[0]} accessToken={accessToken} />}
+              {/* MyImage コンポーネント (ニュース記事の画像を表示) */}
               <Typography
                 sx={{
+                  // Typography コンポーネントのスタイル
                   fontSize: "10px",
                   marginY: "2px",
                   textAlign: "right",
@@ -181,24 +209,27 @@ export default function MusicNewsDetail({ params }) {
                 }}
               >
                 {" "}
-                {newsItem.image_caption}
+                {newsItem.image_caption} {/* ニュース記事の画像のキャプションを表示 */}
               </Typography>
             </Stack>
             {/* タイトル */}
             <Stack>
-              <span dangerouslySetInnerHTML={{ __html: newsItem.news }} />
+              {/* Stack コンポーネント (要素を縦に並べる) */}
+              <span dangerouslySetInnerHTML={{ __html: newsItem.news }} /> {/* ニュース記事の本文を表示 (HTML を直接挿入) */}
             </Stack>
             <Stack direction={"row"} spacing={3}>
-              <p>{newsItem.news_genre_name}</p>
-              <p>{newsItem.media_genre_name}</p>
+              {/* Stack コンポーネント (要素を横に並べる) */}
+              <p>{newsItem.news_genre_name}</p> {/* ニュース記事のジャンルを表示 */}
+              <p>{newsItem.media_genre_name}</p> {/* ニュース記事のメディアジャンルを表示 */}
             </Stack>
             {/* アーティスト名とアーティストID を表示 */}
             <p>関連ワード：</p>
 
             {newsItem.artist &&
               newsItem.artist.map((artist, index) => (
+                // ニュース記事に関連するアーティスト情報を表示
                 <div key={index}>
-                  <p>{artist.artist_name}</p>
+                  <p>{artist.artist_name}</p> {/* アーティスト名を表示 */}
                 </div>
               ))}
           </Stack>

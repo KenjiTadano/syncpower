@@ -1,8 +1,10 @@
 // app/components/MyImage.js
+
 "use client";
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import Skeleton from "@mui/material/Skeleton"; // Skeleton をインポート
 
 export default function MyImage({ imageUrl, accessToken }) {
   const [imageBlob, setImageBlob] = useState(null);
@@ -41,7 +43,7 @@ export default function MyImage({ imageUrl, accessToken }) {
   }, [imageUrl, accessToken]);
 
   if (isLoading) {
-    return <div style={{ width: "100%", height: "100px", backgroundColor: "#eee" }}>Loading...</div>;
+    return <Skeleton variant="rectangular" width="100%" height={100} animation="wave" />; // Skeleton に CSS クラスを適用
   }
 
   if (!imageBlob) {
