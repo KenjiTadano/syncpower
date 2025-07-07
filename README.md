@@ -1,6 +1,6 @@
-##SourceTreeで接続方法
-・アカウントはhttpsで作成
-・tokenをgithubから取得してアカウントに貼り付ける
+##SourceTree で接続方法
+・アカウントは https で作成
+・token を github から取得してアカウントに貼り付ける
 ・
 
 ## 自己署名証明書の作成（HTTPS 用）
@@ -26,8 +26,13 @@ appDir: true
 module.exports = nextConfig;
 
 ##環境変数の設定（.env.local）
-NEXT_PUBLIC_CLIENT_ID=rakutenmusic
-NEXT_PUBLIC_CLIENT_SECRET=1aed621ca6270d9488b0f411fdb590af74047b73e0c6639b037c05a2128cfcb2
+CLIENT_ID=rakutenmusic
+CLIENT_SECRET=1aed621ca6270d9488b0f411fdb590af74047b73e0c6639b037c05a2128cfcb2
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+Vercel の環境設定に下記を記述する
+CLIENT_ID=rakutenmusic
+CLIENT_SECRET=1aed621ca6270d9488b0f411fdb590af74047b73e0c6639b037c05a2128cfcb2
 NEXT_PUBLIC_AUTH_URL=https://md.syncpower.jp/authenticate/v1/token
 
 ##HTTPS 用ローカルサーバー（server.js）
