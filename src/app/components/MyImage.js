@@ -1,21 +1,32 @@
-// app/components/MyImage.js
-
 "use client";
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import Skeleton from "@mui/material/Skeleton"; // Skeleton をインポート
+import Skeleton from "@mui/material/Skeleton";
+
+// キー接頭語（他のlocalStorageキーと区別するため）
+const CACHE_PREFIX = "image-cache:";
 
 export default function MyImage({ imageUrl, accessToken }) {
-  const [imageBlob, setImageBlob] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!imageUrl || !accessToken) return;
+
+    const cacheKey = CACHE_PREFIX + imageUrl;
+
+    // localStorage にキャッシュがあるか確認
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+      setImageSrc(cachedData);
+      setIsLoading(false);
+      return;
+    }
+
+    // なければフェッチ → Base64 に変換してキャッシュ
     async function loadImage() {
-      if (!imageUrl || !accessToken) return;
-
       setIsLoading(true);
-
       try {
         const response = await fetch(`/api/image-proxy?url=${encodeURIComponent(imageUrl)}`, {
           headers: {
@@ -28,27 +39,32 @@ export default function MyImage({ imageUrl, accessToken }) {
         }
 
         const blob = await response.blob();
-        const objectURL = URL.createObjectURL(blob);
-        setImageBlob(objectURL);
+
+        // Blob → Base64 変換
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Data = reader.result;
+          localStorage.setItem(cacheKey, base64Data); // キャッシュ保存
+          setImageSrc(base64Data);
+          setIsLoading(false);
+        };
+        reader.readAsDataURL(blob);
       } catch (error) {
         console.error("Error loading image:", error);
-      } finally {
         setIsLoading(false);
       }
     }
 
     loadImage();
-
-    // クリーンアップでObjectURLを破棄しない（キャッシュ保持のため）
   }, [imageUrl, accessToken]);
 
   if (isLoading) {
-    return <Skeleton variant="rectangular" width="100%" height={100} animation="wave" />; // Skeleton に CSS クラスを適用
+    return <Skeleton variant="rectangular" width="100%" height={100} animation="wave" />;
   }
 
-  if (!imageBlob) {
+  if (!imageSrc) {
     return null;
   }
 
-  return <Image src={imageBlob} alt="My Image" width={600} height={400} style={{ width: "100%", maxWidth: "100%", height: "auto" }} loader={({ src }) => src} unoptimized={true} loading="lazy" />;
+  return <Image src={imageSrc} alt="My Image" width={600} height={400} style={{ width: "100%", maxWidth: "100%", height: "auto" }} loader={({ src }) => src} unoptimized={true} loading="lazy" />;
 }
