@@ -1,12 +1,8 @@
-/** @type {import('next').NextConfig} */
+/\*_ @type {import('next').NextConfig} _/;
 const nextConfig = {
   reactStrictMode: true,
-
-  experimental: {
-    appDir: true,
-  },
-  experimental: {
-    asyncContext: true,
+  env: {
+    OSHIRAKU_API_KEY: process.env.OSHIRAKU_API_KEY,
   },
 };
 

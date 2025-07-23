@@ -111,15 +111,16 @@ const MusicNewsList = ({ offset, limit }) => {
                   padding: "0",
                 }}
               >
-                {/* サムネイル画像 */}
+                {/* サムネイル画像 
                 {news.image_url && news.image_url.length > 0 && (
                   // 画像 URL が存在する場合
                   <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
-                    {/* Box コンポーネント (画像を囲む) */}
+                    {/* Box コンポーネント (画像を囲む) 
                     <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
-                    {/* MyImage コンポーネント (画像を表示) */}
+
                   </Box>
-                )}
+                )}*/}
+
                 <ListItemText
                   // ListItemText コンポーネント (テキストを表示)
                   primary={

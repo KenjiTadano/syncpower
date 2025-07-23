@@ -1,77 +1,36 @@
-// app/components/MusicNews.js
 "use client";
 
-import "../globals.css";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import React from "react";
-/* MUI ICON */
-import NewspaperIcon from "@mui/icons-material/Newspaper";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-
-/* Mui */
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Box, Typography, Card, CardContent, CardMedia, Stack, Link } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
-import MyImage from "./MyImage"; // MyImageコンポーネントをインポート
+/* MUI ICON */
+import NewspaperIcon from "@mui/icons-material/Newspaper";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"; // MUI の ArrowForwardIosIcon コンポーネントをインポート
 
-export default function MusicNews({ accessToken }) {
-  const [musicNews, setMusicNews] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+export default function OshirakuNewsList() {
+  const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    const fetchMusicNews = async () => {
-      if (!accessToken) return;
-
-      setLoading(true);
-      setError("");
-
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-
+    async function fetchArticles() {
       try {
-        const apiUrl = `/api/music-news?posted_at_from=${today}&offset=0&limit=5`;
-        const response = await fetch(apiUrl, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to fetch music news");
-        }
-
-        const news = await response.json();
-        setMusicNews(news.data || []);
-      } catch (err) {
-        setError(`Music news error: ${err.message}`);
-      } finally {
-        setLoading(false);
+        const res = await axios.get("/api/oshiraku-news");
+        setArticles(res.data);
+      } catch (error) {
+        console.error("記事の取得に失敗しました:", error);
       }
-    };
+    }
 
-    fetchMusicNews();
+    fetchArticles();
+  }, []);
 
-    console.log("accessToken stored in cookie:", Cookies.get("accessToken")); // Cookie の内容をログに出力
-  }, [accessToken]);
-
-  if (loading) return <p>Loading music news...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-
-  /* コード部分 */
   return (
     <div>
-      {/* タイトル帯部分*/}
       <Box
         sx={{
           backgroundImage: "url(images/base.png)", // 画像のURLに置き換えてください
@@ -95,23 +54,10 @@ export default function MusicNews({ accessToken }) {
             height: "100%",
           }}
         >
-          <LibraryMusicIcon sx={{ color: "white", fontSize: 32 }} />
-          <h2>音楽ニュース</h2>
+          <NewspaperIcon sx={{ color: "white", fontSize: 32 }} />
+          <h2>インタビュー・コラム</h2>
         </Stack>
       </Box>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "flex-end",
-          alignItems: "center",
-          paddingRight: "12px",
-          marginBottom: "12px",
-        }}
-      >
-        <Button variant="outlined" color="error" component={Link} href="/music-news/all">
-          最新ニュースをもっと見る＞
-        </Button>
-      </Stack>
       <Box
         sx={{
           backgroundColor: "#EDEDED", // 背景色をlightblueに設定
@@ -119,8 +65,8 @@ export default function MusicNews({ accessToken }) {
         }}
       >
         <List>
-          {musicNews.map((news) => (
-            <React.Fragment key={news.news_id}>
+          {articles.map((article, index) => (
+            <React.Fragment key={index}>
               <ListItem
                 alignItems="flex-start"
                 sx={{
@@ -130,7 +76,7 @@ export default function MusicNews({ accessToken }) {
               >
                 <ListItemButton
                   component={Link}
-                  href={`/music-news/${news.news_id}`}
+                  href={article.url}
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -141,12 +87,9 @@ export default function MusicNews({ accessToken }) {
                     padding: "0",
                   }}
                 >
-                  {/* サムネイル画像 */}
-                  {news.image_url && news.image_url.length > 0 && (
-                    <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
-                      <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
-                    </Box>
-                  )}
+                  {/* サムネ画像 */}
+                  {article.thumbnailImage?.url && <CardMedia component="img" image={article.thumbnailImage.url} alt={article.title} sx={{ width: 120, height: 80, objectFit: "cover" }} />}
+                  {/* タイトル */}
                   <ListItemText
                     primary={
                       <Typography
@@ -155,7 +98,7 @@ export default function MusicNews({ accessToken }) {
                         variant="body2"
                         color="text.primary"
                       >
-                        {news.posted_at}
+                        {article.openDate}
                       </Typography>
                     }
                     secondary={
@@ -173,22 +116,24 @@ export default function MusicNews({ accessToken }) {
                             paddingLeft: "6px",
                           }}
                         >
-                          {news.news_title}
+                          {article.title}
                         </Typography>
-                        {news.artist_name && (
+                        {article.labelJa && (
                           <Typography
                             sx={{ display: "block", fontSize: "12px" }} // artist_name のスタイル
                             variant="body2"
                             color="text.secondary"
                           >
-                            アーティスト: {news.artist_name}
+                            {article.labelJa}
                           </Typography>
                         )}
                       </React.Fragment>
                     }
                   />
                   <ListItemIcon sx={{ minWidth: "auto", pr: 1 }}>
+                    {/* ListItemIcon コンポーネント (アイコンを表示) */}
                     <ArrowForwardIosIcon style={{ fontSize: "16px" }} />
+                    {/* ArrowForwardIosIcon コンポーネント (アイコンを表示) */}
                   </ListItemIcon>
                 </ListItemButton>
               </ListItem>
@@ -197,7 +142,6 @@ export default function MusicNews({ accessToken }) {
           ))}
         </List>
       </Box>
-      {/* リストエリア */}
     </div>
   );
 }

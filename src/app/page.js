@@ -8,6 +8,8 @@ import { Element, Link as ScrollLink } from "react-scroll"; // react-scroll を�
 
 import TodayWhatDay from "./components/TodayWhatDay";
 import ReadMusicNews from "./components/MusicNews";
+import dynamic from "next/dynamic";
+import OshirakuNewsList from "./components/OshirakuNewsList";
 
 /* Mui */
 import Box from "@mui/material/Box";
@@ -263,7 +265,7 @@ export default function Home() {
             </Element>
 
             <Element name="interviewSection" style={{ width: "100%" }}>
-              <Typography variant="h4">インタビュー (未実装)</Typography>
+              <OshirakuNewsList />
             </Element>
           </Container>
         </div>
