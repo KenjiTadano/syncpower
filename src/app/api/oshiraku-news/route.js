@@ -3,12 +3,12 @@ import axios from "axios";
 
 export async function GET() {
   try {
-    const response = await axios.get("https://stg.gateway-api.rakuten.co.jp/oshiraku-org/search/v1/article", {
+    const response = await axios.get("https://rdc-api-catalog-gateway-api.rakuten.co.jp/oshiraku/search/v1/article", {
       headers: {
         apikey: process.env.OSHIRAKU_API_KEY,
       },
       params: {
-        oshTagId: 17400,
+        oshTagId: 1,
         type: "original,rewrite",
         label: "feature,report,interview",
         page: 1,
