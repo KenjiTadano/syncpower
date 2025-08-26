@@ -13,10 +13,10 @@ export async function GET() {
       },
       params: {
         oshTagId: 1,
-        type: "original,rewrite",
-        label: "report,interview",
+
         page: 1,
         pageSize: 50,
+        sortType: "opendate",
       },
     });
 
