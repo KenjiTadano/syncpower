@@ -1,4 +1,4 @@
-// app/components/MusicNewsList.js
+// app/music-news/MusicNewsList.js
 
 "use client";
 
@@ -17,171 +17,153 @@ import MyImage from "../components/MyImage"; // MyImage コンポーネントを
 import LinearProgress from "@mui/material/LinearProgress"; // MUI の LinearProgress コンポーネントをインポート (プログレスバー)
 
 const MusicNewsList = ({ offset, limit }) => {
-  // MusicNewsList コンポーネント (音楽ニュースのリストを表示)
   const [musicNews, setMusicNews] = useState([]); // 音楽ニュースのデータを保持する state
   const [error, setError] = useState(null); // エラーメッセージを保持する state
   const [loading, setLoading] = useState(true); // ローディング状態を保持する state
   const [accessToken, setAccessToken] = useState(null); // アクセストークンを保持する state
 
   useEffect(() => {
-    // useEffect フックを使用して、コンポーネントのマウント時および offset, limit の変更時に音楽ニュースデータを取得
     const fetchMusicNews = async () => {
-      // 音楽ニュースデータを取得する非同期関数
       setLoading(true); // ローディング状態を true に設定
       setError(null); // エラーメッセージを null に設定
+      setMusicNews([]); // データをクリア
 
       try {
         // アクセストークンを取得
         const tokenResponse = await fetch("/api/auth"); // /api/auth エンドポイントからアクセストークンを取得
         if (!tokenResponse.ok) {
-          // レスポンスがエラーの場合
-          throw new Error("Failed to fetch access token"); // エラーをスロー
+          const errorData = await tokenResponse.json();
+          // トークン取得失敗時のユーザー向けメッセージ
+          throw new Error(`アクセストークンの取得に失敗しました。ニュースを表示できません。(${errorData.message || tokenResponse.statusText})`);
         }
         const tokenData = await tokenResponse.json(); // レスポンスを JSON として解析
-        const accessToken = tokenData.token; // アクセストークンを取得
+        const fetchedAccessToken = tokenData.token; // アクセストークンを取得
 
-        if (!accessToken) {
-          // アクセストークンが存在しない場合
-          throw new Error("Access token not found"); // エラーをスロー
+        if (!fetchedAccessToken) {
+          throw new Error("アクセストークンが見つかりませんでした。ニュースを表示できません。");
         }
 
-        setAccessToken(accessToken); // アクセストークンを state に保存
+        setAccessToken(fetchedAccessToken); // アクセストークンを state に保存
 
         const apiUrl = `/api/music-news?offset=${offset}&limit=${limit}`; // API の URL を作成
         const response = await fetch(apiUrl, {
-          // API リクエストを送信
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Authorization ヘッダーにアクセストークンを設定
+            Authorization: `Bearer ${fetchedAccessToken}`, // Authorization ヘッダーにアクセストークンを設定
           },
         });
 
         if (!response.ok) {
-          // レスポンスがエラーの場合
-          const errorData = await response.json(); // エラーレスポンスを JSON として解析
-          throw new Error(errorData.error || "Failed to fetch music news"); // エラーをスロー
+          const errorData = await response.json();
+          // 音楽ニュースデータ取得失敗時のユーザー向けメッセージ
+          throw new Error(`音楽ニュースの取得に失敗しました。(${errorData.error || response.statusText})`);
         }
 
         const news = await response.json(); // レスポンスを JSON として解析
         setMusicNews(news.data || []); // 音楽ニュースデータを state に設定
       } catch (err) {
-        // エラーが発生した場合
-        setError(`Music news error: ${err.message}`); // エラーメッセージを state に設定
+        // エラーが発生した場合、ユーザー向けのエラーメッセージを設定
+        setError(`ニュースの読み込み中に問題が発生しました: ${err.message}`);
+        setMusicNews([]); // エラー時はニュースデータをクリア
       } finally {
-        // 処理の最後にローディング状態を false に設定
-        setLoading(false); // ローディング状態を false に設定
+        setLoading(false); // 処理の最後にローディング状態を false に設定
       }
     };
 
     fetchMusicNews(); // 音楽ニュースデータを取得する関数を呼び出す
   }, [offset, limit]); // 依存配列に offset と limit を指定
 
-  if (loading) return <LinearProgress />; // ローディング状態の場合、LinearProgress コンポーネントを表示 (プログレスバー)
-
-  if (error) return <p style={{ color: "red" }}>{error}</p>; // エラーが発生した場合、エラーメッセージを表示
+  if (loading) {
+    return <LinearProgress sx={{ mt: 2 }} />; // ローディング状態の場合、LinearProgress コンポーネントを表示 (プログレスバー)
+  }
 
   return (
     <Box>
-      {/* Box コンポーネント (コンテンツを囲む) */}
-      <List>
-        {/* List コンポーネント (リストを表示) */}
-        {musicNews.map((news) => (
-          // 音楽ニュースデータをループ処理
-          <React.Fragment key={news.news_id}>
-            {/* React.Fragment コンポーネント (複数の要素をグループ化) */}
-            <ListItem
-              // ListItem コンポーネント (リストのアイテム)
-              alignItems="flex-start"
-              sx={{
-                // ListItem コンポーネントのスタイル
-                backgroundColor: "#ffffff",
-                padding: "0",
-              }}
-            >
-              <ListItemButton
-                // ListItemButton コンポーネント (クリック可能なリストアイテム)
-                component={Link}
-                href={`/music-news/${news.news_id}`}
+      {/* エラーメッセージを警告として表示 */}
+      {error && (
+        <Box sx={{ p: 2, mb: 2, backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", color: "#ff9800" }}>
+          <Typography variant="body2">{error}</Typography>
+        </Box>
+      )}
+
+      {/* ニュースデータがある場合のみリストを表示 */}
+      {musicNews.length > 0 ? (
+        <List>
+          {musicNews.map((news) => (
+            <React.Fragment key={news.news_id}>
+              <ListItem
+                alignItems="flex-start"
                 sx={{
-                  // ListItemButton コンポーネントのスタイル
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
+                  backgroundColor: "#ffffff",
                   padding: "0",
                 }}
               >
-                {/* サムネイル画像 
-                {news.image_url && news.image_url.length > 0 && (
-                  // 画像 URL が存在する場合
-                  <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
-                    {/* Box コンポーネント (画像を囲む) 
-                    <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
+                <ListItemButton
+                  component={Link}
+                  href={`/music-news/${news.news_id}`}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    padding: "0",
+                  }}
+                >
+                  {/* サムネイル画像 - MusicNews.js と同様に有効化するならコメント解除 */}
+                  {/*
+                  {news.image_url && news.image_url.length > 0 && (
+                    <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
+                      <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} width={120} height={80} />
+                    </Box>
+                  )}
+                  */}
 
-                  </Box>
-                )}*/}
-
-                <ListItemText
-                  // ListItemText コンポーネント (テキストを表示)
-                  primary={
-                    // primary (メインテキスト)
-                    <Typography
-                      // Typography コンポーネント (テキストを表示)
-                      sx={{ display: "block", fontSize: "10px", paddingLeft: "6px" }} // posted_at のスタイル
-                      component="span"
-                      variant="body2"
-                      color="text.primary"
-                    >
-                      {news.posted_at} {/* 投稿日を表示 */}
-                    </Typography>
-                  }
-                  secondary={
-                    // secondary (サブテキスト)
-                    <React.Fragment>
-                      {/* React.Fragment コンポーネント (複数の要素をグループ化) */}
-                      <Typography
-                        // Typography コンポーネント (テキストを表示)
-                        variant="subtitle1"
-                        style={{ fontSize: "16px", fontWeight: "normal" }} // news_title のスタイル
-                        sx={{
-                          // Typography コンポーネントのスタイル
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: "2",
-                          WebkitBoxOrient: "vertical",
-                          wordBreak: "break-all",
-                          paddingLeft: "6px",
-                        }}
-                      >
-                        {news.news_title} {/* ニュース記事のタイトルを表示 */}
+                  <ListItemText
+                    primary={
+                      <Typography sx={{ display: "block", fontSize: "10px", paddingLeft: "6px" }} component="span" variant="body2" color="text.primary">
+                        {news.posted_at}
                       </Typography>
-                      {news.artist_name && (
-                        // アーティスト名が存在する場合
+                    }
+                    secondary={
+                      <React.Fragment>
                         <Typography
-                          // Typography コンポーネント (テキストを表示)
-                          sx={{ display: "block", fontSize: "12px" }} // artist_name のスタイル
-                          variant="body2"
-                          color="text.secondary"
+                          variant="subtitle1"
+                          style={{ fontSize: "16px", fontWeight: "normal" }}
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: "2",
+                            WebkitBoxOrient: "vertical",
+                            wordBreak: "break-all",
+                            paddingLeft: "6px",
+                          }}
                         >
-                          アーティスト: {news.artist_name} {/* アーティスト名を表示 */}
+                          {news.news_title}
                         </Typography>
-                      )}
-                    </React.Fragment>
-                  }
-                />
-                <ListItemIcon sx={{ minWidth: "auto", pr: 1 }}>
-                  {/* ListItemIcon コンポーネント (アイコンを表示) */}
-                  <ArrowForwardIosIcon style={{ fontSize: "16px" }} />
-                  {/* ArrowForwardIosIcon コンポーネント (アイコンを表示) */}
-                </ListItemIcon>
-              </ListItemButton>
-            </ListItem>
-            <Divider component="li" />
-            {/* Divider コンポーネント (区切り線を表示) */}
-          </React.Fragment>
-        ))}
-      </List>
+                        {news.artist_name && (
+                          <Typography sx={{ display: "block", fontSize: "12px" }} variant="body2" color="text.secondary">
+                            アーティスト: {news.artist_name}
+                          </Typography>
+                        )}
+                      </React.Fragment>
+                    }
+                  />
+                  <ListItemIcon sx={{ minWidth: "auto", pr: 1 }}>
+                    <ArrowForwardIosIcon style={{ fontSize: "16px" }} />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+              <Divider component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      ) : (
+        // ニュースデータがない場合（エラーまたはデータなし）
+        !error && ( // エラーメッセージが表示されている場合は重複して表示しない
+          <Typography sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>表示できる音楽ニュースがありません。</Typography>
+        )
+      )}
     </Box>
   );
 };

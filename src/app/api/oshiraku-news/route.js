@@ -14,7 +14,7 @@ export async function GET() {
       params: {
         oshTagId: 1,
         type: "original,rewrite",
-        label: "feature,report,interview",
+        label: "report,interview",
         page: 1,
         pageSize: 50,
       },

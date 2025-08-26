@@ -1,4 +1,5 @@
 // app/page.js
+
 "use client";
 
 import "./globals.css";
@@ -7,15 +8,15 @@ import { useState, useEffect } from "react";
 import { Element, Link as ScrollLink } from "react-scroll"; // react-scroll をインポート
 
 import TodayWhatDay from "./components/TodayWhatDay";
-import ReadMusicNews from "./components/MusicNews";
-import dynamic from "next/dynamic";
+import ReadMusicNews from "./components/MusicNews"; // MusicNews.js を ReadMusicNews としてインポート
+// import dynamic from "next/dynamic"; // 現在のコードでは使用されていないためコメントアウト
 import OshirakuNewsList from "./components/OshirakuNewsList";
 
 /* Mui */
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
+// import Card from "@mui/material/Card"; // 現在のコードでは使用されていないためコメントアウト
+// import CardActions from "@mui/material/CardActions"; // 現在のコードでは使用されていないためコメントアウト
+// import CardContent from "@mui/material/CardContent"; // 現在のコードでは使用されていないためコメントアウト
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
@@ -83,27 +84,37 @@ export default function Home() {
   useEffect(() => {
     authenticate();
   }, []);
+
   /* 認証してトークン取得 */
   const authenticate = async () => {
     setLoading(true);
+    setError(null); // 新しい認証試行の前にエラーをリセット
+    setToken(null); // 新しい認証試行の前にトークンをリセット
+
     try {
       const response = await fetch("/api/auth");
       if (!response.ok) {
         const errorData = await response.json();
+        // 認証失敗の場合でも、エラーメッセージを設定し、トークンはnullのままにする
         setError(`認証に失敗しました (HTTP ${response.status}): ${errorData.message || "詳細不明"}`);
-        setLoading(false);
-        return;
-      }
-      const data = await response.json();
-      if (data.token && data.expires_at) {
-        setToken(data.token);
+        setToken(null); // トークンは取得できていないのでnullのまま
       } else {
-        setError("認証に失敗しました: 不正なレスポンスデータ");
+        const data = await response.json();
+        if (data.token && data.expires_at) {
+          setToken(data.token);
+          setError(null); // 成功したらエラーをクリア
+        } else {
+          setError("認証に失敗しました: 不正なレスポンスデータ (トークンまたは有効期限がありません)");
+          setToken(null);
+        }
       }
     } catch (e) {
-      setError(`認証中にエラーが発生しました: ${e.message}`);
+      // ネットワークエラーなど
+      setError(`認証中に予期せぬエラーが発生しました: ${e.message}`);
+      setToken(null); // トークンは取得できていないのでnullのまま
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // トークンをマスク表示する関数（例：最初6文字 + … + 最後4文字）
@@ -111,13 +122,24 @@ export default function Home() {
 
   // クリップボードにコピー
   const copyToken = () => {
-    navigator.clipboard.writeText(token).then(() => {
-      alert("トークンをコピーしました！");
-    });
+    if (token) {
+      navigator.clipboard
+        .writeText(token)
+        .then(() => {
+          alert("トークンをコピーしました！");
+        })
+        .catch((err) => {
+          console.error("トークンコピー失敗:", err);
+          alert("トークンのコピーに失敗しました。");
+        });
+    } else {
+      alert("コピーするトークンがありません。");
+    }
   };
 
   return (
     <main>
+      {/* 認証エラーメッセージの表示 */}
       {error && (
         <div
           style={{
@@ -129,7 +151,7 @@ export default function Home() {
             boxShadow: "0 0 5px rgba(204,0,0,0.3)",
           }}
         >
-          <strong>エラー:</strong> {error}
+          <strong>認証エラー:</strong> {error}
           <button
             onClick={() => setError(null)}
             style={{
@@ -147,6 +169,7 @@ export default function Home() {
         </div>
       )}
 
+      {/* 認証ローディング表示 */}
       {loading && (
         <div
           style={{
@@ -179,9 +202,10 @@ export default function Home() {
         </div>
       )}
 
-      {token && !loading && (
+      {/* トークンがある場合（認証成功）またはローディングが終了している場合（認証失敗でもUI表示） */}
+      {!loading && ( // ローディング中はコンテンツを表示しない
         <div>
-          <Container Container maxWidth={false} disableGutters>
+          <Container maxWidth={false} disableGutters>
             <Box
               sx={{
                 position: "fixed", // ビューポートに対して固定
@@ -256,6 +280,7 @@ export default function Home() {
             </Box>
 
             {/* 各コンポーネントを Element で囲む */}
+            {/* accessToken を渡すことで、子コンポーネントが認証状態を判断できるようにする */}
             <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }}>
               <TodayWhatDay accessToken={token} />
             </Element>
@@ -264,6 +289,7 @@ export default function Home() {
               <ReadMusicNews accessToken={token} name="todayWhatDay" />
             </Element>
 
+            {/* OshirakuNewsList は認証不要なので常に表示 */}
             <Element name="interviewSection" style={{ width: "100%" }}>
               <OshirakuNewsList />
             </Element>

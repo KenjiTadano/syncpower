@@ -1,3 +1,5 @@
+// app/music-news/[news_id]/page.js
+
 "use client";
 
 import { useState, useEffect } from "react"; // React の useState と useEffect フックをインポート
