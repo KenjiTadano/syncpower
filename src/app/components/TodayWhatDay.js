@@ -109,6 +109,7 @@ const TodayWhatDay = ({ accessToken }) => {
     // JSX: UIを記述
     <div>
       <Container
+        maxWidth={false}
         sx={{
           paddingTop: "24px",
         }}

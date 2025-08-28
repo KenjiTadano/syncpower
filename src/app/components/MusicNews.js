@@ -93,6 +93,7 @@ export default function MusicNews({ accessToken }) {
   return (
     <div>
       <Container
+        maxWidth={false}
         sx={{
           paddingTop: "24px",
         }}
