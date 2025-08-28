@@ -1,20 +1,13 @@
 // app/components/OshirakuNewsList.js
 
 "use client";
-
+import TitleImage from "./parts/TitleImage.js";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { Box, Typography, CardMedia, Stack, Link, Chip } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemButton from "@mui/material/ListItemButton";
-import Divider from "@mui/material/Divider";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Container, Box, Paper, Typography, CardMedia, Stack, Link, Chip, List, ListItem, ListItemText, ListItemIcon, ListItemButton, CircularProgress, Divider } from "@mui/material";
 
-import NewspaperIcon from "@mui/icons-material/Newspaper";
+/* MUI ICON */
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function OshirakuNewsList() {
@@ -97,179 +90,195 @@ export default function OshirakuNewsList() {
 
   return (
     <div>
-      <Box
+      <Container
         sx={{
-          backgroundImage: "url(images/base.png)",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          height: "50px",
-          width: "100%",
-          maxWidth: "400px",
-          color: "#ffffff",
-          paddingInline: "12px",
-          marginY: "12px",
+          paddingTop: "24px",
         }}
       >
-        <Stack
-          direction="row"
-          spacing={1}
+        <Box
           sx={{
-            justifyContent: "flex-start",
-            alignItems: "center",
+            height: "auto", // 必要に応じて調整 (これはビューポートの高さ)
+            width: "100%", // 必要に応じて調整
+            color: "#000000",
+            marginTop: "12px",
             padding: "0px,12px",
-            height: "100%",
           }}
         >
-          <NewspaperIcon sx={{ color: "white", fontSize: 32 }} />
-          <h2>インタビュー・コラム</h2>
-        </Stack>
-      </Box>
-
-      {error && articles.length > 0 && (
-        <Box sx={{ p: 2, color: "warning.main", backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", mb: 2 }}>
-          <Typography variant="body2">{error}</Typography>
+          <Stack direction="row" spacing={1} sx={{ paddingLeft: "12px!important" }}>
+            <TitleImage />
+            <Stack direction="column" spacing={2}>
+              <Typography noWrap sx={{ fontSize: "12px" }}>
+                Interview / Column
+              </Typography>
+              <Typography noWrap sx={{ marginTop: "0!important", fontSize: "24px", fontWeight: "900" }}>
+                インタビュー・コラム
+              </Typography>
+            </Stack>
+          </Stack>
         </Box>
-      )}
 
-      {articles.length === 0 && !loading && !error && (
-        <Box sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>
-          <Typography>表示できるニュースがありません。</Typography>
-        </Box>
-      )}
+        {/* 説明文 */}
+        <Typography py={1} sx={{ fontSize: "14px", textAlign: "center" }}>
+          エンタメ関連のインタビュー記事をご紹介
+        </Typography>
 
-      <Box
-        sx={{
-          backgroundColor: "#EDEDED",
-          padding: "12px",
-        }}
-      >
-        <List>
-          {articles.map((article) => (
-            <React.Fragment key={article.id}>
-              <ListItem
-                alignItems="flex-start"
+        {error && articles.length > 0 && (
+          <Box sx={{ p: 2, color: "warning.main", backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", mb: 2 }}>
+            <Typography variant="body2">{error}</Typography>
+          </Box>
+        )}
+
+        {articles.length === 0 && !loading && !error && (
+          <Box sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>
+            <Typography>表示できるニュースがありません。</Typography>
+          </Box>
+        )}
+        {/* リスト表示部分 */}
+        <Paper
+          variant="outlined"
+          elevation={3}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          <List
+            sx={{
+              padding: "0",
+            }}
+          >
+            {articles.map((article) => (
+              <React.Fragment
+                key={article.id}
                 sx={{
-                  backgroundColor: "#ffffff",
                   padding: "0",
                 }}
               >
-                <ListItemButton
-                  component={Link}
-                  href={article.url}
+                <ListItem
+                  alignItems="flex-start"
                   sx={{
-                    display: "flex",
-                    // ⭐ ここを center に戻す ⭐
-                    alignItems: "center",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    padding: "4px",
-                    paddingRight: "18px",
+                    backgroundColor: "#ffffff",
+                    padding: "0",
                   }}
                 >
-                  {/* サムネイル画像部分 */}
-                  {article.thumbnailImage?.url && (
-                    <CardMedia
-                      component="img"
-                      image={article.thumbnailImage.url}
-                      alt={article.title}
-                      sx={{
-                        width: 120,
-                        height: 80,
-                        objectFit: "cover",
-                      }}
-                    />
-                  )}
-                  {/* 記事のテキストコンテンツ部分 */}
-                  <ListItemText
-                    sx={{ flex: 1 }}
-                    primary={
-                      <Box
+                  <ListItemButton
+                    component={Link}
+                    href={article.url}
+                    sx={{
+                      display: "flex",
+                      // ⭐ ここを center に戻す ⭐
+                      alignItems: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      padding: "8px",
+                    }}
+                  >
+                    {/* サムネイル画像部分 */}
+                    {article.thumbnailImage?.url && (
+                      <CardMedia
+                        component="img"
+                        image={article.thumbnailImage.url}
+                        alt={article.title}
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          paddingLeft: "6px",
+                          width: 100,
+                          height: 80,
+                          objectFit: "cover",
                         }}
-                      >
-                        <Typography sx={{ fontSize: "10px" }} component="span" variant="body2" color="text.primary">
-                          {article.displayDate}
-                        </Typography>
-                      </Box>
-                    }
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          variant="subtitle1"
-                          style={{ fontSize: "16px", fontWeight: "normal" }}
-                          sx={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "-webkit-box",
-                            WebkitLineClamp: "2",
-                            WebkitBoxOrient: "vertical",
-                            wordBreak: "break-all",
-                            paddingLeft: "6px",
-                          }}
-                        >
-                          {article.title}
-                        </Typography>
+                      />
+                    )}
+                    {/* 記事のテキストコンテンツ部分 */}
+                    <ListItemText
+                      sx={{ flex: 1 }}
+                      primary={
                         <Box
                           sx={{
                             display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                             width: "100%",
                             paddingLeft: "6px",
                           }}
                         >
-                          {/* バッジ */}
-                          {article.type === "oshiraku" && (
-                            <Chip
-                              label="推し楽"
-                              size="small"
-                              color="primary"
-                              sx={{
-                                fontSize: "10px",
-                                height: "18px",
-                                lineHeight: "18px",
-                                "& .MuiChip-label": {
-                                  padding: "0 8px",
-                                },
-                              }}
-                            />
-                          )}
-                          {article.type === "static" && (
-                            <Chip
-                              label="楽天ミュージック"
-                              size="small"
-                              sx={{
-                                fontSize: "10px",
-                                height: "18px",
-                                lineHeight: "18px",
-                                "& .MuiChip-label": {
-                                  padding: "0 8px",
-                                  color: "#ffffff",
-                                },
-                                backgroundColor: "#bf0000",
-                              }}
-                            />
-                          )}
+                          <Typography sx={{ fontSize: "10px" }} component="span" variant="body2" color="text.primary">
+                            {article.displayDate}
+                          </Typography>
                         </Box>
-                      </React.Fragment>
-                    }
-                  />
-                  {/* 右側のアイコン (矢印) */}
-                  <ListItemIcon sx={{ minWidth: "auto", pr: 1 }}>
-                    <ArrowForwardIosIcon style={{ fontSize: "16px" }} />
-                  </ListItemIcon>
-                </ListItemButton>
-              </ListItem>
-              {/* 各リストアイテムの下に区切り線を表示 */}
-              <Divider component="li" />
-            </React.Fragment>
-          ))}
-        </List>
-      </Box>
+                      }
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontSize: "16px", fontWeight: "normal" }}
+                            sx={{
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              display: "-webkit-box",
+                              WebkitLineClamp: "2",
+                              WebkitBoxOrient: "vertical",
+                              wordBreak: "break-all",
+                              paddingLeft: "6px",
+                            }}
+                          >
+                            {article.title}
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              width: "100%",
+                              paddingLeft: "6px",
+                            }}
+                          >
+                            {/* バッジ */}
+                            {article.type === "oshiraku" && (
+                              <Chip
+                                label="推し楽"
+                                size="small"
+                                color="primary"
+                                sx={{
+                                  fontSize: "10px",
+                                  height: "18px",
+                                  lineHeight: "18px",
+                                  "& .MuiChip-label": {
+                                    padding: "0 8px",
+                                  },
+                                }}
+                              />
+                            )}
+                            {article.type === "static" && (
+                              <Chip
+                                label="楽天ミュージック"
+                                size="small"
+                                sx={{
+                                  fontSize: "10px",
+                                  height: "18px",
+                                  lineHeight: "18px",
+                                  "& .MuiChip-label": {
+                                    padding: "0 8px",
+                                    color: "#ffffff",
+                                  },
+                                  backgroundColor: "#bf0000",
+                                }}
+                              />
+                            )}
+                          </Box>
+                        </React.Fragment>
+                      }
+                    />
+                    {/* 右側のアイコン (矢印) */}
+                    <ListItemIcon sx={{ minWidth: "auto", pr: 1 }}>
+                      <ArrowForwardIosIcon style={{ fontSize: "16px" }} />
+                    </ListItemIcon>
+                  </ListItemButton>
+                </ListItem>
+                {/* 各リストアイテムの下に区切り線を表示 */}
+                <Divider variant="middle" sx={{ borderStyle: "dashed", margin: "0" }} />
+              </React.Fragment>
+            ))}
+          </List>
+        </Paper>
+      </Container>
+      {/* タイトル部分 */}
     </div>
   );
 }
