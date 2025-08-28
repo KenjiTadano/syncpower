@@ -1,75 +1,71 @@
 // app/components/OshirakuNewsList.js
 
 "use client";
+
 import TitleImage from "./parts/TitleImage.js";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios"; // axios は不要になるのでコメントアウトまたは削除
+import Link from "next/link"; // Next.js の Link コンポーネントをインポート
 
-import { Container, Box, Paper, Typography, CardMedia, Stack, Link, Chip, List, ListItem, ListItemText, ListItemIcon, ListItemButton, CircularProgress, Divider } from "@mui/material";
+import {
+  Container,
+  Box,
+  Paper,
+  Typography,
+  CardMedia,
+  Stack,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  ListItemButton,
+  CircularProgress,
+  Divider,
+  Button, // 「もっと見る」ボタン用に Button を追加
+} from "@mui/material";
 
 /* MUI ICON */
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
+const DISPLAY_LIMIT = 10; // トップページに表示する記事数
 
 export default function OshirakuNewsList() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalCount, setTotalCount] = useState(0); // 総記事数を保持するstateを追加
 
   useEffect(() => {
-    async function fetchAllNews() {
+    async function fetchCombinedNews() {
       setLoading(true);
       setError(null);
 
-      let fetchedOshirakuArticles = [];
-      let fetchedStaticArticles = [];
-      let currentErrors = [];
-
       try {
-        const oshirakuRes = await axios.get("/api/oshiraku-news");
-        fetchedOshirakuArticles = (oshirakuRes.data || []).map((article) => ({
-          ...article,
-          id: article.articleId,
-          type: "oshiraku",
-          sortDate: article.openDate ? new Date(article.openDate) : new Date(0),
-          displayDate: article.openDate ? new Date(article.openDate).toLocaleDateString() : "日付不明",
-        }));
+        // 新しい統合APIを呼び出す
+        const response = await fetch(`/api/interview-column?page=1&pageSize=${DISPLAY_LIMIT}`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `記事の取得に失敗しました: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setArticles(data.articles || []);
+        setTotalCount(data.total_count || 0); // 総記事数をセット
+        setError(data.error || null); // APIからのエラーメッセージもセット
       } catch (err) {
-        console.error("推し楽記事の取得に失敗しました:", err);
-        currentErrors.push("推し楽ニュースの読み込みに失敗しました。");
+        console.error("インタビュー・コラム記事の取得に失敗しました:", err);
+        setError(`記事の読み込み中に予期せぬエラーが発生しました: ${err.message}`);
+        setArticles([]); // エラー時は記事をクリア
+        setTotalCount(0);
+      } finally {
+        setLoading(false);
       }
-
-      try {
-        const staticRes = await axios.get("/api/static-news");
-        fetchedStaticArticles = (staticRes.data.staticNews || []).map((article) => ({
-          ...article,
-          id: article.id,
-          type: "static",
-          sortDate: article.publishDate ? new Date(article.publishDate) : new Date(0),
-          displayDate: article.publishDate ? new Date(article.publishDate).toLocaleDateString() : "日付不明",
-        }));
-      } catch (err) {
-        console.error("静的記事の取得に失敗しました:", err);
-        currentErrors.push("楽天ミュージックの記事の読み込みに失敗しました。");
-      }
-
-      const combinedNews = [...fetchedOshirakuArticles, ...fetchedStaticArticles];
-
-      combinedNews.sort((a, b) => {
-        const dateA = a.sortDate instanceof Date && !isNaN(a.sortDate) ? a.sortDate.getTime() : 0;
-        const dateB = b.sortDate instanceof Date && !isNaN(b.sortDate) ? b.sortDate.getTime() : 0;
-        return dateB - dateA;
-      });
-
-      if (currentErrors.length > 0) {
-        setError(currentErrors.join("\n"));
-      }
-
-      setArticles(combinedNews);
-      setLoading(false);
     }
 
-    fetchAllNews();
-  }, []);
+    fetchCombinedNews();
+  }, []); // 依存配列は空で、コンポーネントマウント時に一度だけ実行
 
   if (loading) {
     return (
@@ -79,6 +75,7 @@ export default function OshirakuNewsList() {
     );
   }
 
+  // エラーがあり、かつ記事が1件も取得できなかった場合
   if (articles.length === 0 && error) {
     return (
       <Box sx={{ p: 2, color: "error.main" }}>
@@ -99,8 +96,8 @@ export default function OshirakuNewsList() {
       >
         <Box
           sx={{
-            height: "auto", // 必要に応じて調整 (これはビューポートの高さ)
-            width: "100%", // 必要に応じて調整
+            height: "auto",
+            width: "100%",
             color: "#000000",
             marginTop: "12px",
             padding: "0px,12px",
@@ -124,6 +121,7 @@ export default function OshirakuNewsList() {
           エンタメ関連のインタビュー記事をご紹介
         </Typography>
 
+        {/* APIからエラーが返され、かつ記事が一部でも表示されている場合（例えば推し楽はOKだが静的記事がエラーの場合） */}
         {error && articles.length > 0 && (
           <Box sx={{ p: 2, color: "warning.main", backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", mb: 2 }}>
             <Typography variant="body2">{error}</Typography>
@@ -135,6 +133,7 @@ export default function OshirakuNewsList() {
             <Typography>表示できるニュースがありません。</Typography>
           </Box>
         )}
+
         {/* リスト表示部分 */}
         <Paper
           variant="outlined"
@@ -168,7 +167,6 @@ export default function OshirakuNewsList() {
                     href={article.url}
                     sx={{
                       display: "flex",
-                      // ⭐ ここを center に戻す ⭐
                       alignItems: "center",
                       flexDirection: "row",
                       justifyContent: "space-between",
@@ -279,8 +277,25 @@ export default function OshirakuNewsList() {
             ))}
           </List>
         </Paper>
+
+        {/* 「もっと見る」ボタン */}
+        {totalCount > DISPLAY_LIMIT && (
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "flex-end",
+              alignItems: "center",
+              paddingRight: "12px",
+              marginBottom: "12px",
+              marginTop: "12px", // ボタンとリストの間に少しスペースを追加
+            }}
+          >
+            <Button variant="outlined" color="primary" component={Link} href="/interview-column/all">
+              インタビュー・コラムをもっと見る＞
+            </Button>
+          </Stack>
+        )}
       </Container>
-      {/* タイトル部分 */}
     </div>
   );
 }

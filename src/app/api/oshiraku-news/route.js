@@ -15,7 +15,7 @@ export async function GET() {
         oshTagId: 1,
 
         page: 1,
-        pageSize: 50,
+        pageSize: 10,
         sortType: "opendate",
       },
     });
