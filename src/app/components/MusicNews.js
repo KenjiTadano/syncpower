@@ -115,7 +115,7 @@ export default function MusicNews({ accessToken }) {
             spacing={1}
             sx={{
               padding: "0px,12px",
-              gap: "24px",
+              gap: "12px",
             }}
           >
             <Stack direction="row" spacing={1} sx={{ paddingLeft: "12px!important" }}>
@@ -124,7 +124,7 @@ export default function MusicNews({ accessToken }) {
                 <Typography noWrap sx={{ fontSize: "12px" }}>
                   Latest Music News
                 </Typography>
-                <Typography noWrap sx={{ marginTop: "0!important", fontSize: "24px", fontWeight: "900" }}>
+                <Typography noWrap sx={{ marginTop: "0!important", fontSize: "20px", fontWeight: "900" }}>
                   最新音楽ニュース
                 </Typography>
               </Stack>

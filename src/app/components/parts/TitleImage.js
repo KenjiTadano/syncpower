@@ -7,7 +7,7 @@ function TitleImage() {
       <img
         src="images/img_title.png" // 画像のパス
         alt="タイトル画像"
-        style={{ width: "auto", height: "54px" }} // スタイリング
+        style={{ width: "40px", height: "auto" }} // スタイリング
       />
     </Box>
   );

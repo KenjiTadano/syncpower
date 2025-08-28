@@ -130,7 +130,7 @@ const TodayWhatDay = ({ accessToken }) => {
             spacing={1}
             sx={{
               padding: "0px,12px",
-              gap: "24px",
+              gap: "12px",
             }}
           >
             <Stack direction="row" spacing={1} sx={{ paddingLeft: "12px!important" }}>
@@ -139,7 +139,7 @@ const TodayWhatDay = ({ accessToken }) => {
                 <Typography noWrap sx={{ fontSize: "12px" }}>
                   What day is it today?
                 </Typography>
-                <Typography noWrap sx={{ marginTop: "0!important", fontSize: "24px", fontWeight: "900" }}>
+                <Typography noWrap sx={{ marginTop: "0!important", fontSize: "20px", fontWeight: "900" }}>
                   今日は何の日
                 </Typography>
               </Stack>
@@ -149,7 +149,7 @@ const TodayWhatDay = ({ accessToken }) => {
               justifyContent="center"
               alignItems="center"
               px={2}
-              py={0.5}
+              py={0.1}
               sx={{
                 border: "1px solid #e7e7e7", // ボーダー: 幅1px, 実線, プライマリカラー
                 borderRadius: "8px", // 角丸: 8px
@@ -160,7 +160,7 @@ const TodayWhatDay = ({ accessToken }) => {
               <Typography noWrap sx={{ fontSize: "14px", textAlign: "center", fontWeight: "900" }}>
                 今日は
               </Typography>
-              <Typography noWrap sx={{ color: "#bf0000", marginTop: "0!important", fontSize: "36px", fontWeight: "900", textAlign: "center", lineHeight: "100%" }}>
+              <Typography noWrap sx={{ color: "#bf0000", marginTop: "0!important", fontSize: "24px", fontWeight: "900", textAlign: "center", lineHeight: "100%" }}>
                 {todayFormatted}
               </Typography>
             </Stack>

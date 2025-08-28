@@ -112,7 +112,7 @@ export default function OshirakuNewsList() {
               <Typography noWrap sx={{ fontSize: "12px" }}>
                 Interview / Column
               </Typography>
-              <Typography noWrap sx={{ marginTop: "0!important", fontSize: "24px", fontWeight: "900" }}>
+              <Typography noWrap sx={{ marginTop: "0!important", fontSize: "20px", fontWeight: "900" }}>
                 インタビュー・コラム
               </Typography>
             </Stack>
