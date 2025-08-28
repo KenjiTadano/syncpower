@@ -91,7 +91,9 @@ export default function OshirakuNewsList() {
   return (
     <div>
       <Container
+        maxWidth={false}
         sx={{
+          width: "100%",
           paddingTop: "24px",
         }}
       >
