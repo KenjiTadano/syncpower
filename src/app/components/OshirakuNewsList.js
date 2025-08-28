@@ -196,39 +196,6 @@ export default function OshirakuNewsList() {
                         <Typography sx={{ fontSize: "10px" }} component="span" variant="body2" color="text.primary">
                           {article.displayDate}
                         </Typography>
-
-                        {/* バッジ */}
-                        {article.type === "oshiraku" && (
-                          <Chip
-                            label="推し楽"
-                            size="small"
-                            color="primary"
-                            sx={{
-                              fontSize: "0.7rem",
-                              height: "18px",
-                              lineHeight: "18px",
-                              "& .MuiChip-label": {
-                                padding: "0 6px",
-                              },
-                            }}
-                          />
-                        )}
-                        {article.type === "static" && (
-                          <Chip
-                            label="楽天ミュージック"
-                            size="small"
-                            sx={{
-                              fontSize: "0.7rem",
-                              height: "18px",
-                              lineHeight: "18px",
-                              "& .MuiChip-label": {
-                                padding: "0 6px",
-                                color: "#ffffff",
-                              },
-                              backgroundColor: "#bf0000",
-                            }}
-                          />
-                        )}
                       </Box>
                     }
                     secondary={
@@ -248,6 +215,46 @@ export default function OshirakuNewsList() {
                         >
                           {article.title}
                         </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            width: "100%",
+                            paddingLeft: "6px",
+                          }}
+                        >
+                          {/* バッジ */}
+                          {article.type === "oshiraku" && (
+                            <Chip
+                              label="推し楽"
+                              size="small"
+                              color="primary"
+                              sx={{
+                                fontSize: "10px",
+                                height: "18px",
+                                lineHeight: "18px",
+                                "& .MuiChip-label": {
+                                  padding: "0 8px",
+                                },
+                              }}
+                            />
+                          )}
+                          {article.type === "static" && (
+                            <Chip
+                              label="楽天ミュージック"
+                              size="small"
+                              sx={{
+                                fontSize: "10px",
+                                height: "18px",
+                                lineHeight: "18px",
+                                "& .MuiChip-label": {
+                                  padding: "0 8px",
+                                  color: "#ffffff",
+                                },
+                                backgroundColor: "#bf0000",
+                              }}
+                            />
+                          )}
+                        </Box>
                       </React.Fragment>
                     }
                   />
