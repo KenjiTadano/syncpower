@@ -2,7 +2,11 @@
 
 "use client"; // クライアントサイドのコンポーネントであることを宣言
 
+//css
 import "../globals.css";
+//コンポーネントパーツ
+import TitleImage from "./parts/TitleImage.js";
+
 import { useState, useEffect } from "react"; // ReactのuseStateとuseEffectフックをインポート
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -15,6 +19,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress"; // ローディング表示用に追加
+import { Container, Divider, Paper } from "@mui/material";
 
 const TodayWhatDay = ({ accessToken }) => {
   // 状態変数: 記事タイプ、APIデータ、ローディング状態、エラーメッセージ、展開されたアイテムID、今日の日付
@@ -103,82 +108,127 @@ const TodayWhatDay = ({ accessToken }) => {
   return (
     // JSX: UIを記述
     <div>
-      <Box
+      <Container
         sx={{
-          backgroundImage: "url(images/base.png)", // 画像のURLに置き換えてください
-          backgroundSize: "cover", // または 'contain', 'auto' など
-          backgroundRepeat: "no-repeat",
-          height: "50px", // 必要に応じて調整 (これはビューポートの高さ)
-          width: "100%", // 必要に応じて調整
-          maxWidth: "400px",
-          color: "#ffffff",
-          paddingInline: "12px",
-          marginY: "12px",
+          paddingTop: "24px",
         }}
       >
-        <Stack
-          direction="row"
-          spacing={1}
+        <Box
           sx={{
-            justifyContent: "flex-start",
-            alignItems: "center",
+            height: "auto", // 必要に応じて調整 (これはビューポートの高さ)
+            width: "100%", // 必要に応じて調整
+            color: "#000000",
+            marginTop: "12px",
             padding: "0px,12px",
           }}
         >
-          <ArticleIcon sx={{ color: "white", fontSize: 32 }} />
-          <h4>今日は何の日</h4>
-          <h1>{todayFormatted}</h1>
-        </Stack>
-      </Box>
-
-      {/* ローディング状態の表示 */}
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100px" }}>
-          <CircularProgress />
-        </Box>
-      )}
-
-      {/* エラーメッセージを警告として表示 */}
-      {error && (
-        <Box sx={{ p: 1, mb: 2, backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", color: "#ff9800" }}>
-          <Typography variant="body2">{error}</Typography>
-        </Box>
-      )}
-
-      {/* APIデータが存在し、かつデータアイテムがある場合、結果を表示 */}
-      {apiData && apiData.data && apiData.data.length > 0 ? (
-        <div>
-          <Box
+          {/* タイトル部分 */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{
-              backgroundColor: "#EDEDED", // 背景色をlightblueに設定
-              padding: "12px",
+              padding: "0px,12px",
+              gap: "24px",
             }}
           >
-            <Stack spacing={1}>
-              {/* APIデータから取得した各アイテムをアコーディオンリストとして表示 */}
-              {apiData.data.map((item) => (
-                <div key={item.what_day_id} style={{ gap: "4px" }}>
-                  {/* タイトルをクリックするとアコーディオンが開閉 */}
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel-${item.what_day_id}-content`} id={`panel-${item.what_day_id}-header`}>
-                      <Typography component="span">{item.title}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography>アーティスト: {item.artist}</Typography>
-                      <Typography>記事ノート: {item.article_note}</Typography>
-                      <Typography>記事タイプ: {item.article_type}</Typography>
-                      <Typography>更新日時: {item.modified_at}</Typography>
-                    </AccordionDetails>
-                  </Accordion>
-                </div>
-              ))}
+            <Stack direction="row" spacing={1} sx={{ paddingLeft: "12px!important" }}>
+              <TitleImage />
+              <Stack direction="column" spacing={2}>
+                <Typography noWrap sx={{ fontSize: "12px" }}>
+                  What day is it today?
+                </Typography>
+                <Typography noWrap sx={{ marginTop: "0!important", fontSize: "24px", fontWeight: "900" }}>
+                  今日は何の日
+                </Typography>
+              </Stack>
             </Stack>
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              px={2}
+              py={0.5}
+              sx={{
+                border: "1px solid #e7e7e7", // ボーダー: 幅1px, 実線, プライマリカラー
+                borderRadius: "8px", // 角丸: 8px
+                bgcolor: "white", // 背景色 (ボーダーと区別しやすくするため)
+                mb: 3,
+              }}
+            >
+              <Typography noWrap sx={{ fontSize: "14px", textAlign: "center", fontWeight: "900" }}>
+                今日は
+              </Typography>
+              <Typography noWrap sx={{ color: "#bf0000", marginTop: "0!important", fontSize: "36px", fontWeight: "900", textAlign: "center", lineHeight: "100%" }}>
+                {todayFormatted}
+              </Typography>
+            </Stack>
+          </Stack>
+        </Box>
+
+        {/* 説明文 */}
+        <Typography py={1} sx={{ fontSize: "14px", textAlign: "center" }}>
+          今日の日付からアーティストにまつわる出来事をピックアップ
+        </Typography>
+
+        {/* ローディング状態の表示 */}
+        {loading && (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100px" }}>
+            <CircularProgress />
           </Box>
-        </div>
-      ) : (
-        // データが見つからなかった場合、またはエラーでデータがクリアされた場合
-        !loading && <Typography sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>{error ? "データの読み込み中にエラーが発生しました。" : "表示できる「今日は何の日」のデータが見つかりませんでした。"}</Typography>
-      )}
+        )}
+
+        {/* エラーメッセージを警告として表示 */}
+        {error && (
+          <Box sx={{ p: 1, mb: 2, backgroundColor: "#fff3e0", borderLeft: "4px solid #ff9800", color: "#ff9800" }}>
+            <Typography variant="body2">{error}</Typography>
+          </Box>
+        )}
+        <Paper
+          variant="outlined"
+          elevation={3}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          {/* APIデータが存在し、かつデータアイテムがある場合、結果を表示 */}
+          {apiData && apiData.data && apiData.data.length > 0 ? (
+            <div>
+              <Box
+                sx={{
+                  backgroundColor: "#EDEDED", // 背景色をlightblueに設定
+                  padding: "12px",
+                }}
+              >
+                <Stack spacing={1}>
+                  {/* APIデータから取得した各アイテムをアコーディオンリストとして表示 */}
+                  {apiData.data.map((item) => (
+                    <div key={item.what_day_id} style={{ gap: "4px" }}>
+                      {/* タイトルをクリックするとアコーディオンが開閉 */}
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel-${item.what_day_id}-content`} id={`panel-${item.what_day_id}-header`}>
+                          <Typography component="span">{item.title}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography>アーティスト: {item.artist}</Typography>
+                          <Typography>記事ノート: {item.article_note}</Typography>
+                          <Typography>記事タイプ: {item.article_type}</Typography>
+                          <Typography>更新日時: {item.modified_at}</Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </div>
+                  ))}
+                </Stack>
+              </Box>
+            </div>
+          ) : (
+            // データが見つからなかった場合、またはエラーでデータがクリアされた場合
+            !loading && <Typography sx={{ p: 2, textAlign: "center", color: "text.secondary" }}>{error ? "データの読み込み中にエラーが発生しました。" : "表示できるデータが見つかりませんでした。"}</Typography>
+          )}
+        </Paper>
+      </Container>
     </div>
   );
 };
