@@ -234,14 +234,15 @@ export default function OshirakuNewsList() {
                               <Chip
                                 label="推し楽"
                                 size="small"
-                                color="primary"
                                 sx={{
                                   fontSize: "10px",
                                   height: "18px",
                                   lineHeight: "18px",
                                   "& .MuiChip-label": {
                                     padding: "0 8px",
+                                    color: "#232c47",
                                   },
+                                  backgroundColor: "#b898bc",
                                 }}
                               />
                             )}
@@ -283,14 +284,13 @@ export default function OshirakuNewsList() {
           <Stack
             direction="row"
             sx={{
-              justifyContent: "flex-end",
+              justifyContent: "center",
               alignItems: "center",
-              paddingRight: "12px",
               marginBottom: "12px",
               marginTop: "12px", // ボタンとリストの間に少しスペースを追加
             }}
           >
-            <Button variant="outlined" color="primary" component={Link} href="/interview-column/all">
+            <Button variant="outlined" color="error" component={Link} sx={{ width: "100%" }} href="/interview-column/all">
               インタビュー・コラムをもっと見る＞
             </Button>
           </Stack>
