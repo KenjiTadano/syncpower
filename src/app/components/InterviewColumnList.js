@@ -58,7 +58,6 @@ const InterviewColumnList = ({ page, pageSize, onTotalArticlesChange }) => {
         onTotalArticlesChange(data.total_count || 0);
         // APIからのエラーメッセージもセット (部分的なエラーの場合など)
         setError(data.error || null);
-
       } catch (err) {
         console.error("インタビュー・コラム記事の取得中に問題が発生しました:", err);
         setError(`記事の読み込み中に予期せぬエラーが発生しました: ${err.message}`);
@@ -70,7 +69,6 @@ const InterviewColumnList = ({ page, pageSize, onTotalArticlesChange }) => {
     };
 
     fetchArticles(); // 記事データを取得する関数を呼び出す
-
   }, [page, pageSize, onTotalArticlesChange]); // 依存配列に page, pageSize, onTotalArticlesChange を指定
 
   if (loading) {
@@ -170,14 +168,15 @@ const InterviewColumnList = ({ page, pageSize, onTotalArticlesChange }) => {
                             <Chip
                               label="推し楽"
                               size="small"
-                              color="primary"
                               sx={{
                                 fontSize: "10px",
                                 height: "18px",
                                 lineHeight: "18px",
                                 "& .MuiChip-label": {
                                   padding: "0 8px",
+                                  color: "#232c47",
                                 },
+                                backgroundColor: "#b898bc",
                               }}
                             />
                           )}

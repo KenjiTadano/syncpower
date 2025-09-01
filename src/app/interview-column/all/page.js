@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
@@ -18,16 +18,30 @@ const LAST_PAGE_KEY = "lastInterviewColumnPage"; // localStorage のキー
 
 const AllInterviewColumnPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1); // 現在のページ番号
   const [totalArticles, setTotalArticles] = useState(0); // 総記事数
 
   useEffect(() => {
-    // localStorage からページ番号を読み込む
-    const lastPage = localStorage.getItem(LAST_PAGE_KEY);
-    if (lastPage) {
-      setCurrentPage(parseInt(lastPage, 10));
+    // URLのクエリパラメータから resetPage をチェック
+    const resetPage = searchParams.get("resetPage");
+
+    if (resetPage === "true") {
+      // resetPage が true の場合、1ページ目にリセット
+      setCurrentPage(1);
+      localStorage.setItem(LAST_PAGE_KEY, "1"); // localStorage も1に更新
+      // URLから resetPage クエリパラメータを削除 (オプション: URLをクリーンに保つため)
+      // ただし、Next.jsの useRouter.replace はサーバー側のレンダリングと競合する場合があるため注意
+      // シンプルなリセット動作ならこのままでもOK
+      // router.replace('/interview-column/all', undefined, { shallow: true }); // これを使うと無限ループになる可能性があるので注意
+    } else {
+      // resetPage がない場合、localStorage からページ番号を読み込む
+      const lastPage = localStorage.getItem(LAST_PAGE_KEY);
+      if (lastPage) {
+        setCurrentPage(parseInt(lastPage, 10));
+      }
     }
-  }, []);
+  }, [searchParams]); // searchParams が変更されたときに実行
 
   // InterviewColumnList から総記事数を受け取るコールバック関数
   const handleTotalArticlesChange = (count) => {
@@ -36,8 +50,7 @@ const AllInterviewColumnPage = () => {
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
-    localStorage.setItem(LAST_PAGE_KEY, value.toString()); // ページ変更時に localStorage に保存
-    // ページが変更されたら、ページのトップにスクロール
+    localStorage.setItem(LAST_PAGE_KEY, value.toString());
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 

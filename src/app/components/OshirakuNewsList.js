@@ -290,7 +290,7 @@ export default function OshirakuNewsList() {
               marginTop: "12px", // ボタンとリストの間に少しスペースを追加
             }}
           >
-            <Button variant="outlined" color="error" component={Link} sx={{ width: "100%" }} href="/interview-column/all">
+            <Button variant="outlined" color="error" component={Link} sx={{ width: "100%" }} href="/interview-column/all?resetPage=true">
               インタビュー・コラムをもっと見る＞
             </Button>
           </Stack>

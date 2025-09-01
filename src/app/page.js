@@ -281,7 +281,9 @@ export default function Home() {
 
             {/* 各コンポーネントを Element で囲む */}
             {/* accessToken を渡すことで、子コンポーネントが認証状態を判断できるようにする */}
-            <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }}>
+            <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }}
+            sx={{backgroundColor:"#f8f8f8"}}
+            >
               <TodayWhatDay accessToken={token} />
             </Element>
 
