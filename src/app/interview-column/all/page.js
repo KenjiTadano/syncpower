@@ -16,7 +16,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"; // 戻る
 import IconButton from "@mui/material/IconButton"; // アイコンボタン
 import Stack from "@mui/material/Stack"; // 要素のレイアウト用
 import Typography from "@mui/material/Typography"; // テキスト表示用
-import { Container, Pagination, Box } from "@mui/material"; // コンテナ、ページネーション、汎用ボックス
+import { Container, Pagination, Box, Paper } from "@mui/material"; // コンテナ、ページネーション、汎用ボックス
 
 // カスタムコンポーネントをインポート
 import InterviewColumnList from "../../components/InterviewColumnList"; // インタビュー・コラム記事のリスト表示用
@@ -124,7 +124,7 @@ const AllInterviewColumnPage = () => {
       {/* メインコンテンツ部分 */}
       <Container
         sx={{
-          backgroundColor: "#EDEDED", // 背景色
+          backgroundColor: "#f8f8f8", // 背景色
           padding: "12px", // 内側の余白
           marginTop: "60px", // 固定ヘッダーの高さ分、コンテンツを下にずらす
         }}
@@ -141,29 +141,37 @@ const AllInterviewColumnPage = () => {
             localStorageKey={LAST_PAGE_KEY} // localStorage のキーを渡す
           />
         </Suspense>
-
-        {/* インタビュー・コラム記事リストコンポーネント */}
-        <InterviewColumnList
-          page={currentPage} // 現在のページ番号を渡す
-          pageSize={PAGE_SIZE} // 1ページあたりの記事数を渡す
-          onTotalArticlesChange={handleTotalArticlesChange} // 総記事数を受け取るコールバック関数を渡す
-        />
-
-        {/* ページネーションコンポーネント */}
-        {/* 総記事数が0件より多い場合にのみページネーションを表示 */}
-        {totalArticles > 0 && (
-          <Pagination
-            count={pageCount} // 総ページ数
-            page={currentPage} // 現在のページ番号
-            onChange={handlePageChange} // ページ変更時のイベントハンドラ
-            sx={{
-              display: "flex", // flexbox を有効化
-              justifyContent: "center", // 水平方向の中央揃え
-              mt: 2, // 上部のマージン
-              mb: 2, // 下部のマージン
-            }}
+        <Paper
+          variant="outlined"
+          elevation={3}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          {/* インタビュー・コラム記事リストコンポーネント */}
+          <InterviewColumnList
+            page={currentPage} // 現在のページ番号を渡す
+            pageSize={PAGE_SIZE} // 1ページあたりの記事数を渡す
+            onTotalArticlesChange={handleTotalArticlesChange} // 総記事数を受け取るコールバック関数を渡す
           />
-        )}
+
+          {/* ページネーションコンポーネント */}
+          {/* 総記事数が0件より多い場合にのみページネーションを表示 */}
+          {totalArticles > 0 && (
+            <Pagination
+              count={pageCount} // 総ページ数
+              page={currentPage} // 現在のページ番号
+              onChange={handlePageChange} // ページ変更時のイベントハンドラ
+              sx={{
+                display: "flex", // flexbox を有効化
+                justifyContent: "center", // 水平方向の中央揃え
+                mt: 2, // 上部のマージン
+                mb: 2, // 下部のマージン
+              }}
+            />
+          )}
+        </Paper>
       </Container>
     </div>
   );

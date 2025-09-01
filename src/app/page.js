@@ -205,7 +205,7 @@ export default function Home() {
       {/* トークンがある場合（認証成功）またはローディングが終了している場合（認証失敗でもUI表示） */}
       {!loading && ( // ローディング中はコンテンツを表示しない
         <div>
-          <Container maxWidth={false} disableGutters>
+          <Container maxWidth={false} disableGutters sx={{ backgroundColor: "#f8f8f8" }}>
             <Box
               sx={{
                 position: "fixed", // ビューポートに対して固定
@@ -281,9 +281,7 @@ export default function Home() {
 
             {/* 各コンポーネントを Element で囲む */}
             {/* accessToken を渡すことで、子コンポーネントが認証状態を判断できるようにする */}
-            <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }}
-            sx={{backgroundColor:"#f8f8f8"}}
-            >
+            <Element name="todayWhatDaySection" style={{ marginTop: "50px", width: "100%" }} sx={{ backgroundColor: "#f8f8f8" }}>
               <TodayWhatDay accessToken={token} />
             </Element>
 
