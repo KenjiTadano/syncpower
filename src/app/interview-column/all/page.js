@@ -16,7 +16,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"; // 戻る
 import IconButton from "@mui/material/IconButton"; // アイコンボタン
 import Stack from "@mui/material/Stack"; // 要素のレイアウト用
 import Typography from "@mui/material/Typography"; // テキスト表示用
-import { Container, Pagination, Box, Paper } from "@mui/material"; // コンテナ、ページネーション、汎用ボックス
+// CircularProgress もインポートに追加
+import { Container, Pagination, Box, Paper, CircularProgress } from "@mui/material"; // コンテナ、ページネーション、汎用ボックス、紙のようなコンポーネント
 
 // カスタムコンポーネントをインポート
 import InterviewColumnList from "../../components/InterviewColumnList"; // インタビュー・コラム記事のリスト表示用
@@ -39,24 +40,6 @@ const AllInterviewColumnPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   // totalArticles: APIから取得した全記事の総件数 (ページネーションの総ページ数計算に使用)
   const [totalArticles, setTotalArticles] = useState(0);
-
-  // useEffect フックは、コンポーネントのマウント時や依存配列の変更時に副作用を実行する
-  // このuseEffectは、localStorageから前回のページ番号を読み込むために一度だけ実行される
-  // ただし、useSearchParamsによるリセットロジックは ResetPageOnLoad コンポーネントに移動したため、
-  // ここでlocalStorageから読み込むのは、resetPage=true がない通常のアクセス時のみとなる。
-  // ResetPageOnLoad コンポーネントが currentPage を設定するため、この useEffect は不要になるか、
-  // ResetPageOnLoad が設定した後にさらに上書きする形になるため、慎重に扱う必要がある。
-  // -> ResetPageOnLoad が localStorage の読み込みも担当するため、この useEffect は削除する。
-  //    もし残すなら、ResetPageOnLoad の useEffect が先に実行されるように調整が必要。
-  //    今回は ResetPageOnLoad が全てを制御するため、この useEffect は削除が適切。
-
-  // 💡 以前の useEffect は ResetPageOnLoad コンポーネントに移動したため、この部分は削除されます。
-  // useEffect(() => {
-  //   const lastPage = localStorage.getItem(LAST_PAGE_KEY);
-  //   if (lastPage) {
-  //     setCurrentPage(parseInt(lastPage, 10));
-  //   }
-  // }, []);
 
   /**
    * InterviewColumnList コンポーネントから総記事数を受け取るコールバック関数。
@@ -135,18 +118,41 @@ const AllInterviewColumnPage = () => {
           サーバーサイドでのプリレンダリング時にエラーとならないようにするため。
           fallback は、ResetPageOnLoad がクライアントサイドでハイドレーションされるまでの間に表示される。
         */}
-        <Suspense fallback={<Box sx={{ textAlign: "center", py: 2 }}>ページ情報を読み込み中...</Box>}>
+        <Suspense
+          fallback={
+            // 💡 ここが修正箇所: ローディングインジケータを画面中央に配置
+            <Box
+              sx={{
+                display: "flex", // flexbox を有効に
+                justifyContent: "center", // 水平方向の中央揃え
+                alignItems: "center", // 垂直方向の中央揃え
+                // 画面の高さいっぱいに広げ、ヘッダーの高さ分を引く
+                minHeight: "calc(100vh - 120px)", // 画面全体の高さからヘッダーと下部の余白を引いた高さ
+                width: "100%", // 幅を100%に
+              }}
+            >
+              <CircularProgress /> {/* 円形プログレスインジケータ */}
+            </Box>
+          }
+        >
           <ResetPageOnLoad
             setCurrentPage={setCurrentPage} // currentPage ステートを更新するための関数を渡す
             localStorageKey={LAST_PAGE_KEY} // localStorage のキーを渡す
           />
         </Suspense>
+
+        {/* 記事リスト部分を Paper で囲む */}
         <Paper
           variant="outlined"
           elevation={3}
           sx={{
             borderRadius: 2,
             overflow: "hidden",
+            // 💡 InterviewColumnList のローディングと Paper が重複しないように、
+            //    ローディング中は Paper を表示しない。
+            //    ただし、ここでは Suspense の fallback を使っているので、
+            //    InterviewColumnList のローディングは Suspense の fallback の後に表示される。
+            //    つまり、InterviewColumnList 自身のローディングは LinearProgress のまま。
           }}
         >
           {/* インタビュー・コラム記事リストコンポーネント */}
@@ -155,23 +161,23 @@ const AllInterviewColumnPage = () => {
             pageSize={PAGE_SIZE} // 1ページあたりの記事数を渡す
             onTotalArticlesChange={handleTotalArticlesChange} // 総記事数を受け取るコールバック関数を渡す
           />
-
-          {/* ページネーションコンポーネント */}
-          {/* 総記事数が0件より多い場合にのみページネーションを表示 */}
-          {totalArticles > 0 && (
-            <Pagination
-              count={pageCount} // 総ページ数
-              page={currentPage} // 現在のページ番号
-              onChange={handlePageChange} // ページ変更時のイベントハンドラ
-              sx={{
-                display: "flex", // flexbox を有効化
-                justifyContent: "center", // 水平方向の中央揃え
-                mt: 2, // 上部のマージン
-                mb: 2, // 下部のマージン
-              }}
-            />
-          )}
         </Paper>
+
+        {/* ページネーションコンポーネント */}
+        {/* 総記事数が0件より多い場合にのみページネーションを表示 */}
+        {totalArticles > 0 && (
+          <Pagination
+            count={pageCount} // 総ページ数
+            page={currentPage} // 現在のページ番号
+            onChange={handlePageChange} // ページ変更時のイベントハンドラ
+            sx={{
+              display: "flex", // flexbox を有効化
+              justifyContent: "center", // 水平方向の中央揃え
+              mt: 2, // 上部のマージン
+              mb: 2, // 下部のマージン
+            }}
+          />
+        )}
       </Container>
     </div>
   );
