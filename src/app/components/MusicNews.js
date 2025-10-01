@@ -171,15 +171,15 @@ export default function MusicNews({ accessToken }) {
                         justifyContent: "space-between",
                         alignItems: "center",
                         width: "100%",
-                        padding: "0",
+                        padding: "4px",
                       }}
                     >
                       {/* サムネイル画像 */}
-                      {news.image_url && news.image_url.length > 0 && (
-                        <Box sx={{ display: "flex", alignItems: "center", width: "90px", height: "60px", m: 1, overflow: "hidden", position: "relative" }}>
-                          <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} width={120} height={80} />
-                        </Box>
-                      )}
+                      {news.image_url && news.image_url.length > 0 && 
+                      <Box>
+                      <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
+                      </Box>
+                      }
 
                       <ListItemText
                         primary={

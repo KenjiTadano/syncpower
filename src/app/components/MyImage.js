@@ -5,7 +5,7 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import Skeleton from "@mui/material/Skeleton";
-
+import CardMedia from "@mui/material/CardMedia";
 // キー接頭語と有効期限（秒）
 const CACHE_PREFIX = "image-cache:";
 const CACHE_EXPIRATION_SECONDS = 3600; // 1時間
@@ -154,6 +154,7 @@ export default function MyImage({
   }
 
   return (
+    /*  
     <Image
       src={imageSrc}
       alt={alt} // alt も props から受け取る
@@ -163,6 +164,17 @@ export default function MyImage({
       loader={({ src }) => src}
       unoptimized={true}
       loading="lazy"
+    />
+    */
+    <CardMedia
+      component="img" // imgタグとして描画
+      image={imageSrc} // 画像URL
+      alt={alt} // 画像のaltテキスト
+      sx={{
+        width: 100, // 横幅
+        height: 80, // 縦幅
+        objectFit: "cover", // coverで中央トリミング
+      }}
     />
   );
 }
