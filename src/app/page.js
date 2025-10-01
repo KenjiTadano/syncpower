@@ -138,7 +138,7 @@ export default function Home() {
   };
 
   return (
-    <main >
+    <main>
       {/* 認証エラーメッセージの表示 */}
       {error && (
         <div
