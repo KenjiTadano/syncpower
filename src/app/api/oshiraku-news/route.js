@@ -13,7 +13,6 @@ export async function GET() {
       },
       params: {
         oshTagId: 1,
-
         page: 1,
         pageSize: 10,
         sortType: "opendate",

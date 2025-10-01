@@ -238,14 +238,15 @@ export default function MusicNews({ accessToken }) {
         <Stack
           direction="row"
           sx={{
-            justifyContent: "flex-end",
+            justifyContent: "center",
             alignItems: "center",
-            paddingRight: "12px",
+
             marginBottom: "12px",
+            marginTop: "12px",
           }}
         >
           {musicNews.length > 0 ? (
-            <Button variant="outlined" color="error" component={Link} href="/music-news/all">
+            <Button variant="outlined" color="error" component={Link} sx={{ width: "100%", backgroundColor: "#ffffff" }} href="/music-news/all">
               最新ニュースをもっと見る＞
             </Button>
           ) : (

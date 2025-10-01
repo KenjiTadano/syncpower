@@ -19,7 +19,8 @@ import CardActions from "@mui/material/CardActions"; // MUI の CardActions コ�
 import CardContent from "@mui/material/CardContent"; // MUI の CardContent コンポーネントをインポート
 import { Container } from "@mui/material"; // MUI の Container コンポーネントをインポート
 import Chip from "@mui/material/Chip"; // MUI の Chip コンポーネントをインポート
-import LinearProgress from '@mui/material/LinearProgress'; // MUI の LinearProgress コンポーネントをインポート (プログレスバー)
+import LinearProgress from "@mui/material/LinearProgress"; // MUI の LinearProgress コンポーネントをインポート (プログレスバー)
+const LOGO_IMAGE_URL = "/images/logo_cdj.png";
 
 export default function MusicNewsDetail({ params }) {
   // MusicNewsDetail コンポーネント (音楽ニュース詳細ページ)
@@ -236,6 +237,29 @@ export default function MusicNewsDetail({ params }) {
               ))}
           </Stack>
         </Card>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+
+            marginBottom: "12px",
+            marginTop: "12px",
+          }}
+        >
+          <img
+            src={LOGO_IMAGE_URL}
+            alt="Logo"
+            style={{
+              right: "20px", // 右端から20px
+              bottom: "20px", // 下端から20px
+              width: "120px", // ロゴの横幅（必要なら調整）
+              height: "auto", // アスペクト比維持
+              zIndex: 2000, // 他の要素よりも前面に表示
+              opacity: 0.85, // 透明度（必要に応じて調整）
+            }}
+          />
+        </Box>
       </Container>
     </div>
   );

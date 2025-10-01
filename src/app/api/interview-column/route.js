@@ -182,6 +182,7 @@ export async function GET(request) {
             page: currentOshirakuPage, // 現在の推し楽APIページ番号
             pageSize: OSHIRAKU_MAX_PAGE_SIZE, // 最大件数でリクエスト
             sortType: "opendate", // 公開日順でソート
+            label: "feature,report,interview,exclusive,public_relations",
           },
         });
 

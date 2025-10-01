@@ -215,7 +215,9 @@ const TodayWhatDay = ({ accessToken }) => {
                         <AccordionDetails>
                           <Typography>アーティスト: {item.artist}</Typography>
                           <Typography>記事ノート: {item.article_note}</Typography>
+                          {/*  
                           <Typography>記事タイプ: {item.article_type}</Typography>
+                          */}
                           <Typography>更新日時: {item.modified_at}</Typography>
                         </AccordionDetails>
                       </Accordion>
