@@ -200,7 +200,7 @@ export default function MusicNewsDetail({ params }) {
             {/* 画像とキャプション */}
             <Stack spacing={0}>
               {/* Stack コンポーネント (要素を縦に並べる) */}
-              {newsItem.image_url && newsItem.image_url.length > 0 && <MyImage imageUrl={newsItem.image_url[0]} accessToken={accessToken} />}
+              {newsItem.image_url && newsItem.image_url.length > 0 && <MyImage sx={{ width: "fit-content" }} imageUrl={newsItem.image_url[0]} accessToken={accessToken} />}
               {/* MyImage コンポーネント (ニュース記事の画像を表示) */}
               <Typography
                 sx={{

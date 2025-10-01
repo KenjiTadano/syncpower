@@ -25,9 +25,11 @@ appDir: true
 module.exports = nextConfig;
 
 ##環境変数の設定（.env.local）
-CLIENT_ID=rakutenmusic
-CLIENT_SECRET=1aed621ca6270d9488b0f411fdb590af74047b73e0c6639b037c05a2128cfcb2
+SYNCPOWER_CLIENT_ID=rakutenmusic
+SYNCPOWER_CLIENT_SECRET=44e2b22ef16fb758b339b758514f7cee87ec6fa4e63759e78b365a42bab53895
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+OSHIRAKU_API_KEY=KEhaJea88BtBFOcT8vX3C1yljYhxkIce
+
 
 Vercel の環境設定に下記を記述する
 CLIENT_ID=rakutenmusic

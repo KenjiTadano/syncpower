@@ -1,7 +1,7 @@
-/\*_ @type {import('next').NextConfig} _/;
+/\*_ @type {import('next').NextConfig} _/
 const nextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
+reactStrictMode: true,
+experimental: {
+appDir: true
+}
 };

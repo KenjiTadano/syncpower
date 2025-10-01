@@ -175,11 +175,20 @@ export default function MusicNews({ accessToken }) {
                       }}
                     >
                       {/* サムネイル画像 */}
-                      {news.image_url && news.image_url.length > 0 && 
-                      <Box>
-                      <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} />
-                      </Box>
-                      }
+                      {news.image_url && news.image_url.length > 0 && (
+                        <Stack
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            width: "100px",
+                            padding: "0",
+                          }}
+                        >
+                          <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} width={100} height={80} />
+                        </Stack>
+                      )}
 
                       <ListItemText
                         primary={

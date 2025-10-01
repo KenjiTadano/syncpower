@@ -14,8 +14,8 @@ export default function MyImage({
   imageUrl,
   accessToken,
   alt = "My Image", // alt を props から受け取る
-  width = 600, // width を props から受け取る
-  height = 400, // height を props から受け取る
+  width, // width を props から受け取る
+  height, // height を props から受け取る
   // objectFit, objectPosition なども必要に応じて追加
 }) {
   const [imageSrc, setImageSrc] = useState(null);
@@ -170,9 +170,9 @@ export default function MyImage({
       component="img" // imgタグとして描画
       image={imageSrc} // 画像URL
       alt={alt} // 画像のaltテキスト
+      width={width}
+      height={height}
       sx={{
-        width: 100, // 横幅
-        height: 80, // 縦幅
         objectFit: "cover", // coverで中央トリミング
       }}
     />
