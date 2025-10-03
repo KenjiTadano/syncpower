@@ -16,6 +16,7 @@ export default function MyImage({
   alt = "My Image", // alt を props から受け取る
   width, // width を props から受け取る
   height, // height を props から受け取る
+  minwidth,
   // objectFit, objectPosition なども必要に応じて追加
 }) {
   const [imageSrc, setImageSrc] = useState(null);
@@ -154,24 +155,13 @@ export default function MyImage({
   }
 
   return (
-    /*  
-    <Image
-      src={imageSrc}
-      alt={alt} // alt も props から受け取る
-      width={width}
-      height={height}
-      style={{ width: "100%", maxWidth: "100%", height: "auto" }}
-      loader={({ src }) => src}
-      unoptimized={true}
-      loading="lazy"
-    />
-    */
     <CardMedia
       component="img" // imgタグとして描画
       image={imageSrc} // 画像URL
       alt={alt} // 画像のaltテキスト
       width={width}
       height={height}
+      minwidth={minwidth}
       sx={{
         objectFit: "cover", // coverで中央トリミング
       }}

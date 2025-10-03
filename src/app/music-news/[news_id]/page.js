@@ -193,7 +193,7 @@ export default function MusicNewsDetail({ params }) {
                   color: "#666666",
                 }}
               >
-                投稿日: {newsItem.posted_at} {/* ニュース記事の投稿日を表示 */}
+                投稿日: {newsItem.posted_at ? `${newsItem.posted_at.substring(0, 4)}/${newsItem.posted_at.substring(4, 6)}/${newsItem.posted_at.substring(6, 8)}` : ""} {/* ニュース記事の投稿日を表示 */}
               </Typography>
               <Chip label={`${newsItem.news_genre_name}`} sx={{ width: "fit-content" }} /> {/* Chip コンポーネント (ニュース記事のジャンルを表示) */}
             </Stack>

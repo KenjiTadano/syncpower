@@ -182,8 +182,10 @@ export default function OshirakuNewsList() {
                         alt={article.title}
                         sx={{
                           width: 100,
+                          minWidth: 100,
                           height: 80,
                           objectFit: "cover",
+                          flexShrink: 0,
                         }}
                       />
                     )}

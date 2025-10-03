@@ -176,18 +176,29 @@ export default function MusicNews({ accessToken }) {
                     >
                       {/* サムネイル画像 */}
                       {news.image_url && news.image_url.length > 0 && (
-                        <Stack
+                        <Box
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            flexDirection: "row",
+                            width: 100, // Box 自体に固定幅を設定
+                            minWidth: 100, // 最小幅も保証 (重要)
+                            height: 80, // 高さも Box で管理
+                            flexShrink: 0, // この Box は縮小しない (重要)
+                            display: "flex", // Box 内の CardMedia を中央配置したい場合など
                             justifyContent: "center",
-                            width: "100px",
-                            padding: "0",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            mr: 1, // 右側に少しマージンを追加
                           }}
                         >
-                          <MyImage imageUrl={news.image_url[0]} accessToken={accessToken} width={100} height={80} />
-                        </Stack>
+                          <MyImage
+                            imageUrl={news.image_url[0]}
+                            accessToken={accessToken}
+                            height={80}
+                            sx={{
+                              width: "100%", // 親 Box の幅いっぱいに
+                              height: "100%",
+                            }}
+                          />
+                        </Box>
                       )}
 
                       <ListItemText
@@ -198,7 +209,7 @@ export default function MusicNews({ accessToken }) {
                             variant="body2"
                             color="text.primary"
                           >
-                            {news.posted_at}
+                            {news.posted_at ? `${news.posted_at.substring(0, 4)}/${news.posted_at.substring(4, 6)}/${news.posted_at.substring(6, 8)}` : ""}
                           </Typography>
                         }
                         secondary={

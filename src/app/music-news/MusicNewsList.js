@@ -121,7 +121,7 @@ const MusicNewsList = ({ offset, limit }) => {
                   <ListItemText
                     primary={
                       <Typography sx={{ display: "block", fontSize: "10px", paddingLeft: "6px" }} component="span" variant="body2" color="text.primary">
-                        {news.posted_at}
+                        {news.posted_at ? `${news.posted_at.substring(0, 4)}/${news.posted_at.substring(4, 6)}/${news.posted_at.substring(6, 8)}` : ""}
                       </Typography>
                     }
                     secondary={

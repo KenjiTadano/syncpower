@@ -105,7 +105,7 @@ const InterviewColumnList = ({ page, pageSize, onTotalArticlesChange }) => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    padding: "8px",
+                    padding: "4px",
                   }}
                 >
                   {/* サムネイル画像部分 */}
