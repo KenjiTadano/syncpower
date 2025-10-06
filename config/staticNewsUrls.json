@@ -1,1 +1,4 @@
-["https://music.rakuten.co.jp/column/01/index.html", "https://music.rakuten.co.jp/column/02/index.html", "https://music.rakuten.co.jp/column/03/index.html"]
+{
+  "pcUrls": ["https://music.rakuten.co.jp/column/01/", "https://music.rakuten.co.jp/column/02/", "https://music.rakuten.co.jp/column/03/"],
+  "mobileUrls": ["https://music.rakuten.co.jp/column/01_app/", "https://music.rakuten.co.jp/column/02_app/", "https://music.rakuten.co.jp/column/03/"]
+}
