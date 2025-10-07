@@ -238,7 +238,7 @@ export async function GET(request) {
             apikey: OSHIRAKU_API_KEY,
           },
           params: {
-            oshTagId: 1,
+            oshTagId: 3,
             page: currentOshirakuPage,
             pageSize: OSHIRAKU_MAX_PAGE_SIZE,
             sortType: "opendate",
