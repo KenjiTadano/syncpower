@@ -25,6 +25,10 @@ const OSHIRAKU_API_KEY = process.env.OSHIRAKU_API_KEY;
 
 // 推し楽APIが一度に取得できる記事の最大件数
 const OSHIRAKU_MAX_PAGE_SIZE = 100;
+// ★追加★ 推し楽APIから取得する記事の最大件数
+// 例えば、最新の300件だけを取得したい場合は 300 に設定します。
+// 0 に設定すると推し楽記事は取得されません。
+const OSHIRAKU_FETCH_LIMIT = 100;
 
 // CORS (Cross-Origin Resource Sharing) の許可オリジン設定
 // クライアントのオリジン (例: VercelデプロイURL) を指定することで、セキュリティを確保しつつアクセスを許可する
@@ -231,8 +235,20 @@ export async function GET(request) {
       let currentOshirakuPage = 1;
       let hasMoreOshiraku = true;
       let tempOshirakuArticles = [];
+      let totalFetchedOshiraku = 0; // ★追加★ 取得済みの推し楽記事総数
 
-      while (hasMoreOshiraku) {
+      // 記事がなくなるまで、または取得制限に達するまでループ
+      while (hasMoreOshiraku && totalFetchedOshiraku < OSHIRAKU_FETCH_LIMIT) {
+        // ★修正★
+        // 1回のAPI呼び出しで取得する件数
+        // 残りの取得制限数を考慮して pageSize を調整
+        const currentFetchSize = Math.min(OSHIRAKU_MAX_PAGE_SIZE, OSHIRAKU_FETCH_LIMIT - totalFetchedOshiraku);
+
+        // currentFetchSize が 0 以下なら、もう取得する必要がない
+        if (currentFetchSize <= 0) {
+          hasMoreOshiraku = false;
+          break;
+        }
         const oshirakuRes = await axios.get(OSHIRAKU_API_ENDPOINT, {
           headers: {
             apikey: OSHIRAKU_API_KEY,
@@ -240,7 +256,7 @@ export async function GET(request) {
           params: {
             oshTagId: 3,
             page: currentOshirakuPage,
-            pageSize: OSHIRAKU_MAX_PAGE_SIZE,
+            pageSize: currentFetchSize,
             sortType: "opendate",
           },
         });
@@ -255,15 +271,20 @@ export async function GET(request) {
         }));
 
         tempOshirakuArticles = tempOshirakuArticles.concat(fetchedArticles);
+        totalFetchedOshiraku += fetchedArticles.length; // ★追加★ 取得総数を更新
 
-        if (fetchedArticles.length < OSHIRAKU_MAX_PAGE_SIZE) {
+        // 取得した記事数がリクエストした pageSize より少なければ、もう次のページはない
+        // または、取得総数が制限に達していればループを終了
+        if (fetchedArticles.length < currentFetchSize || totalFetchedOshiraku >= OSHIRAKU_FETCH_LIMIT) {
+          // ★修正★
           hasMoreOshiraku = false;
         } else {
           currentOshirakuPage++;
         }
       }
-      allCombinedArticles = allCombinedArticles.concat(tempOshirakuArticles);
-      console.log(`[interview-column API] Fetched ${tempOshirakuArticles.length} Oshiraku articles.`);
+      // 最終的に取得制限を超えてしまった場合のために切り詰める
+      allCombinedArticles = allCombinedArticles.concat(tempOshirakuArticles.slice(0, OSHIRAKU_FETCH_LIMIT)); // ★修正★
+      console.log(`[interview-column API] Fetched ${allCombinedArticles.filter((a) => a.type === "oshiraku").length} Oshiraku articles (up to limit).`);
     } catch (err) {
       console.error("Failed to fetch Oshiraku articles:", err.message);
       oshirakuFetchError = "推し楽ニュースの取得に失敗しました。";

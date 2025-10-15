@@ -210,15 +210,19 @@ const TodayWhatDay = ({ accessToken }) => {
 
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel-${item.what_day_id}-content`} id={`panel-${item.what_day_id}-header`}>
-                          <Typography component="span">{item.title}</Typography>
+                          <Typography component="span" style={{ fontWeight: "700" }}>
+                            {item.title}
+                          </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
+                          <Divider />
+                          <br />
                           <Typography>アーティスト: {item.artist}</Typography>
+
                           <Typography>記事ノート: {item.article_note}</Typography>
                           {/*  
                           <Typography>記事タイプ: {item.article_type}</Typography>
                           */}
-                          <Typography>更新日時: {item.modified_at}</Typography>
                         </AccordionDetails>
                       </Accordion>
                     </div>
