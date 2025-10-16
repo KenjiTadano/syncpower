@@ -194,6 +194,7 @@ const InterviewColumnList = ({ page, pageSize, onTotalArticlesChange }) => {
                                 },
                                 backgroundColor: "#bf0000",
                               }}
+                              
                             />
                           )}
                         </Box>
