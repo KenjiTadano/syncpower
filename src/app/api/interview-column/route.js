@@ -258,6 +258,7 @@ export async function GET(request) {
             page: currentOshirakuPage,
             pageSize: currentFetchSize,
             sortType: "opendate",
+            label: "feature,report,interview,exclusive",
           },
         });
 
