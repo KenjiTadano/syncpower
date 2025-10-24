@@ -1,9 +1,25 @@
+:root {
+  /* フォールバックフォントは、Noto Sans JP が読み込めなかった場合に表示されるフォントです。 */
+  /* 一般的なゴシック体のシステムフォントを指定すると良いでしょう。 */
+  --font-noto-sans-jp: "Noto Sans JP", "Hiragino Sans", "ヒラギノ角ゴ ProN", "Meiryo", "メイリオ", "Yu Gothic", "游ゴシック", sans-serif;
+}
+
 body {
+  font-family: var(--font-noto-sans-jp);
   margin: 0;
 }
+/* 特定の要素に異なるウェイトやスタイルを適用することも可能です */
+h1 {
+  font-family: var(--font-noto-sans-jp);
+  font-weight: 700; /* Bold ウェイトを適用 */
+}
+
 p {
+  font-family: var(--font-noto-sans-jp);
+  font-weight: 400; /* Regular ウェイトを適用 */
   margin: 0;
 }
+
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 70%);
